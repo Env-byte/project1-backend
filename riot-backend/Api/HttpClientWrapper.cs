@@ -12,30 +12,36 @@ public class HttpClientWrapper : IHttpClientWrapper
         _factory = factory;
     }
 
-    public async Task<T> Get<T>(string name) where T : new()
+    private HttpClient GetHttpClient()
     {
         using var client = _factory.CreateClient();
-        
         client.DefaultRequestHeaders.Add("X-Riot-Token", Config.ApiKey);
+        return client;
+    }
 
-        var url = Config.Endpoints[0, 1] + "/tft/summoner/v1/summoners/by-name/" + Uri.EscapeDataString(name);
-        Console.Write("CurlGet: " + url + "\n\r");
+    private async Task<string> _ExecGet(string url)
+    {
+        using var client = GetHttpClient();
+        
+        url = Config.Endpoints[0, 1] + url;
         var response = await client.GetAsync(url);
         if (response.StatusCode != HttpStatusCode.OK)
         {
             throw new Exception("Api call to " + url + " failed. Status Code: " + response.StatusCode);
         }
+        return response.Content.ReadAsStringAsync().Result;
+    }
 
-        Console.Write("Result: " + response.Content.ReadAsStringAsync().Result + "\n\r");
-
-        var result = JsonConvert.DeserializeObject<T>(response.Content.ReadAsStringAsync().Result) ??
+    public T Get<T>(string url) where T : new()
+    {
+        var response = _ExecGet(url).Result;
+        var result = JsonConvert.DeserializeObject<T>(response) ??
                      throw new InvalidOperationException("Could not decode response");
-
         return result;
     }
 }
 
 public interface IHttpClientWrapper
 {
-    Task<T> Get<T>(string name) where T : new();
+    T Get<T>(string name) where T : new();
 }
