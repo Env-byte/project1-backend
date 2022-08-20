@@ -12,27 +12,21 @@ public class HttpClientWrapper : IHttpClientWrapper
         _factory = factory;
     }
 
-    private HttpClient GetHttpClient()
-    {
-        using var client = _factory.CreateClient();
-        client.DefaultRequestHeaders.Add("X-Riot-Token", Config.ApiKey);
-        return client;
-    }
 
     private async Task<string> _ExecGet(string url)
     {
-        using var client = GetHttpClient();
-        
-        url = Config.Endpoints[0, 1] + url;
+        using var client = _factory.CreateClient();
+        client.DefaultRequestHeaders.Add("X-Riot-Token", Config.ApiKey);
         var response = await client.GetAsync(url);
         if (response.StatusCode != HttpStatusCode.OK)
         {
             throw new Exception("Api call to " + url + " failed. Status Code: " + response.StatusCode);
         }
+
         return response.Content.ReadAsStringAsync().Result;
     }
 
-    public T Get<T>(string url) where T : new()
+    public T Get<T>(string url)
     {
         var response = _ExecGet(url).Result;
         var result = JsonConvert.DeserializeObject<T>(response) ??
@@ -43,5 +37,6 @@ public class HttpClientWrapper : IHttpClientWrapper
 
 public interface IHttpClientWrapper
 {
-    T Get<T>(string name) where T : new();
+    
+    T Get<T>(string name);
 }

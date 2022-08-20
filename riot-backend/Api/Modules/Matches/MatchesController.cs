@@ -13,9 +13,15 @@ public class MatchesController : Controller
         _loader = new MatchLoader(http);
     }
 
-    [HttpGet("api/matches")]
-    public Types.Match Get(string name)
+    [HttpGet("api/matches/name")]
+    public Types.Match GetMatch(string name)
     {
-        return _loader.Get(name);
+        return _loader.GetMatch(name);
+    }
+
+    [HttpGet("api/matches/puuid")]
+    public List<string> GetMatches(string puuid)
+    {
+        return _loader.GetMatches(puuid);
     }
 }

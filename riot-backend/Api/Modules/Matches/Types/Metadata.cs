@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace riot_backend.Api.Modules.Matches.Types;
 
 public class Metadata
@@ -5,25 +7,20 @@ public class Metadata
     /**
      * Match data version.
      */
+
+    [JsonProperty("data_version")]
     public string dataVersion { get; set; }
 
     /**
      * Match id.
      */
+    [JsonProperty("match_id")]
     public string matchId { get; set; }
 
     /**
      * A list of participant PUUIDs.
      */
-    public string[] participants { get; set; }
-
-    public static Metadata FromJson(dynamic json)
-    {
-        return new Metadata
-        {
-            dataVersion = json.data_version,
-            matchId = json.match_id,
-            participants = json.participants
-        };
-    }
+    [JsonProperty("participants")]
+    public List<string> participants { get; set; }
+    
 }

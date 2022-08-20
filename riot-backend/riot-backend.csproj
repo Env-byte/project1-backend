@@ -15,7 +15,6 @@
     <ItemGroup>
       <Folder Include="Api\Modules\Champions" />
       <Folder Include="Api\Modules\Items" />
-      <Folder Include="Api\Modules\Traits" />
     </ItemGroup>
 
 </Project>
