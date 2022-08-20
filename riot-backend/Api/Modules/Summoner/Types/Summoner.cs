@@ -43,7 +43,7 @@ public class Summoner
      * url to the users icon
      */
     public string iconUrl { get; set; }
-
+    
     public static Summoner FromJson(dynamic json)
     {
         return new Summoner

@@ -5,16 +5,23 @@ using Microsoft.AspNetCore.Mvc;
 public class SummonerController : Controller
 {
     private readonly ILogger<SummonerController> _logger;
+    private readonly SummonerLoader _loader;
 
-    public SummonerController(ILogger<SummonerController> logger)
+    public SummonerController(ILogger<SummonerController> logger, IHttpClientWrapper http)
     {
         _logger = logger;
+        _loader = new SummonerLoader(http);
     }
 
-    [HttpGet("api/Summoner")]
-    public Types.Summoner Get(string name)
+    [HttpGet("api/Summoner/name")]
+    public Types.Summoner GetByName(string name)
     {
-        var summonerLoader = new SummonerLoader();
-        return summonerLoader.Get(name);
+        return _loader.GetByName(name);
+    }
+
+    [HttpGet("api/Summoner/puuid")]
+    public Types.Summoner GetByPuuid(string puuid)
+    {
+        return _loader.GetByPuuid(puuid);
     }
 }
