@@ -5,7 +5,7 @@ namespace riot_backend.Api.Modules.Matches.Types;
 public class MatchTrait
 {
     /**
-     * Trait name.
+     * Trait name. This is the trait key for the traits api
      */
     [JsonProperty("name")]
     public string name { get; set; }
