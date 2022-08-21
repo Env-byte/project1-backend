@@ -13,7 +13,6 @@ public class ItemLoader
         var path = AppContext.BaseDirectory + "/Cache/items.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
         var contents = streamReader.ReadToEnd();
-        Console.Write(contents);
         items = JsonConvert.DeserializeObject<List<Item>>(contents) ??
                 throw new InvalidOperationException("Could not decode file");
     }
@@ -26,10 +25,10 @@ public class ItemLoader
 
     public Item Get(string key)
     {
-        var item = items.Where(item => item.id == key);
-        if (item.Count() == 1)
+        var itemEnumerable = items.Where(item => item.id == key);
+        if (itemEnumerable.Count() == 1)
         {
-            return item.GetEnumerator().Current;
+            return itemEnumerable.GetEnumerator().Current;
         }
 
         throw new KeyNotFoundException();

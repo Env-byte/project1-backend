@@ -13,7 +13,6 @@ public class TraitLoader
         var path = AppContext.BaseDirectory + "/Cache/traits.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
         var contents = streamReader.ReadToEnd();
-        Console.Write(contents);
         traits = JsonConvert.DeserializeObject<List<Trait>>(contents) ??
                  throw new InvalidOperationException("Could not decode file");
     }
@@ -26,10 +25,10 @@ public class TraitLoader
 
     public Trait Get(string key)
     {
-        var trait = traits.Where(trait => trait.key == key);
-        if (trait.Count() == 1)
+        var traitEnumerable = traits.Where(trait => trait.key == key);
+        if (traitEnumerable.Count() == 1)
         {
-            return trait.GetEnumerator().Current;
+            return traitEnumerable.GetEnumerator().Current;
         }
         throw new KeyNotFoundException();
     }
