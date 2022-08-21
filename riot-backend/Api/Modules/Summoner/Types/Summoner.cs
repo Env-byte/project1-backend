@@ -54,18 +54,4 @@ public class Summoner
 
     public string iconUrl =>
         "https://ddragon.leagueoflegends.com/cdn/12.15.1/img/profileicon/" + profileIconId + ".png";
-
-    public static Summoner FromJson(dynamic json)
-    {
-        return new Summoner
-        {
-            id = json.id,
-            accountId = json.accountId,
-            puuid = json.puuid,
-            name = json.name,
-            profileIconId = json.profileIconId,
-            revisionDate = json.revisionDate,
-            summonerLevel = json.summonerLevel,
-        };
-    }
 }

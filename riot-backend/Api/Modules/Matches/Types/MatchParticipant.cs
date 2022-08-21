@@ -60,12 +60,12 @@ public class MatchParticipant
      * A complete list of traits for the participant's active units.
      */
     [JsonProperty("traits")]
-    public List<Trait> traits { set; get; }
+    public List<MatchTrait> traits { set; get; }
 
     /**
      * A list of active units for the participant.
      */
     [JsonProperty("units")]
-    public List<Units> units { set; get; }
+    public List<MatchUnit> units { set; get; }
 
 }

@@ -13,13 +13,13 @@ public class SummonerController : Controller
         _loader = new SummonerLoader(http);
     }
 
-    [HttpGet("api/Summoner/name")]
+    [HttpGet("api/summoner/name")]
     public Types.Summoner GetByName(string name)
     {
         return _loader.GetByName(name);
     }
 
-    [HttpGet("api/Summoner/puuid")]
+    [HttpGet("api/summoner/puuid")]
     public Types.Summoner GetByPuuid(string puuid)
     {
         return _loader.GetByPuuid(puuid);

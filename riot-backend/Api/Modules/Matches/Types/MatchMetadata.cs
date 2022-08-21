@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace riot_backend.Api.Modules.Matches.Types;
 
-public class Metadata
+public class MatchMetadata
 {
     /**
      * Match data version.

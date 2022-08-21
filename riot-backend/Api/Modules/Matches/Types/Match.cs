@@ -8,7 +8,7 @@ public class Match
      * Match metadata.
      */
     [JsonProperty("metadata")]
-    public Metadata metadata { get; set; }
+    public MatchMetadata metadata { get; set; }
 
     /**
      * Match info.

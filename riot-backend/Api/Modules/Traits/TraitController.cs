@@ -7,8 +7,8 @@ public class TraitController : Controller
     private readonly ILogger<TraitController> _logger;
     private readonly TraitLoader _loader;
     
-    [HttpGet("api/Summoner/name")]
-    public Types.Trait GetAll(string name)
+    [HttpGet("api/trait/get")]
+    public Types.Trait GetAll()
     {
         return null;
     }

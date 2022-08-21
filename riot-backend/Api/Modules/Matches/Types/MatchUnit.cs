@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace riot_backend.Api.Modules.Matches.Types;
 
-public class Units
+public class MatchUnit
 {
     /**
      * A list of the unit's items. Please refer to the Teamfight Tactics documentation for item ids.
