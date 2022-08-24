@@ -8,14 +8,10 @@ namespace riot_backend.Api.Modules.Users;
 public class UsersController : Controller
 {
     private IUserService _userService;
-    private IMapper _mapper;
 
-    public UsersController(
-        IUserService userService,
-        IMapper mapper)
+    public UsersController(IUserService userService)
     {
         _userService = userService;
-        _mapper = mapper;
     }
 
     [HttpGet("")]
@@ -35,8 +31,8 @@ public class UsersController : Controller
     [HttpPost]
     public IActionResult Create(User user)
     {
-        _userService.Create(user);
-        return Ok(new { message = "User created" });
+        user = _userService.Create(user);
+        return Ok(new { user });
     }
 
     [HttpPut("{id:int}")]

@@ -1,6 +1,5 @@
 using Dapper;
 using Npgsql;
-using NpgsqlTypes;
 using riot_backend.Api.Modules.Users.Types;
 
 namespace riot_backend.Api.Modules.Users;
@@ -14,12 +13,12 @@ public interface IUserService
     void Delete(int id);
 }
 
-public class UserService : IUserService
+public class UserService<T> : IUserService where T : IDatabaseWrapper, new()
 {
     public IEnumerable<User> GetAll()
     {
-        using var conn = DatabaseWrapper.GetDatabase();
-        using var cmd = new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM general.users", conn);
+        using var conn = DatabaseFactory.Get<T>();
+        using var cmd = new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users", conn);
         using var reader = cmd.ExecuteReader();
         var parser = reader.GetRowParser<User>(typeof(User));
         var users = new List<User>();
@@ -42,10 +41,10 @@ public class UserService : IUserService
 
     public User Create(User user)
     {
-        using var conn = DatabaseWrapper.GetDatabase();
+        using var conn = DatabaseFactory.Get<T>();
         using var cmd = new NpgsqlCommand();
         cmd.CommandText =
-            "INSERT INTO general.users (first_name,last_name,email,type,token) values (@first_name,@last_name,@email,@type,@token) returning id;";
+            "INSERT INTO users (first_name,last_name,email,type,token) values (@first_name,@last_name,@email,@type,@token) returning id;";
         cmd.Connection = conn;
 
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "first_name", Value = user.firstName });
@@ -61,10 +60,10 @@ public class UserService : IUserService
 
     public void Update(int id, User user)
     {
-        using var conn = DatabaseWrapper.GetDatabase();
+        using var conn = DatabaseFactory.Get<T>();
         using var cmd = new NpgsqlCommand();
         cmd.CommandText =
-            "UPDATE general.users SET first_name= :first_name, last_name= :last_name, email = :email WHERE id = @id";
+            "UPDATE users SET first_name= :first_name, last_name= :last_name, email = :email WHERE id = @id";
         cmd.Connection = conn;
 
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = user.id });
@@ -79,9 +78,9 @@ public class UserService : IUserService
 
     public void Delete(int id)
     {
-        using var conn = DatabaseWrapper.GetDatabase();
+        using var conn = DatabaseFactory.Get<T>();
         using var cmd = new NpgsqlCommand();
-        cmd.CommandText = "DELETE FROM general.users  WHERE id = @id";
+        cmd.CommandText = "DELETE FROM users  WHERE id = @id";
         cmd.Connection = conn;
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
         cmd.Prepare();
@@ -91,9 +90,9 @@ public class UserService : IUserService
 
     private static User GetUser(int id)
     {
-        using var conn = DatabaseWrapper.GetDatabase();
+        using var conn = DatabaseFactory.Get<T>();
         using var cmd =
-            new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM general.users WHERE @id", conn);
+            new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users WHERE @id", conn);
         using var reader = cmd.ExecuteReader();
         var parser = reader.GetRowParser<User>(typeof(User));
         //should only ever return one row
@@ -104,6 +103,7 @@ public class UserService : IUserService
             // get first user
             return user;
         }
+
         throw new KeyNotFoundException("User with id:  " + id + " not found.");
     }
 }

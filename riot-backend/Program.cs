@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
 // configure DI for application services
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService<DatabaseWrapper>>();
 
 
 var app = builder.Build();
