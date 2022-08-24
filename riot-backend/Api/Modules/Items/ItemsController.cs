@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace riot_backend.Api.Modules.Items;
 
-[Route("api/item")]
+[Route("api/item/")]
 public class ItemsController : Controller
 {
     private readonly ILogger<ItemsController> _logger;
@@ -21,7 +21,7 @@ public class ItemsController : Controller
         return _loader.GetAll();
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public Types.Item Get(string key)
     {
         return _loader.Get(key);

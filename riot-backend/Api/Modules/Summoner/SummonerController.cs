@@ -2,7 +2,7 @@ namespace riot_backend.Api.Modules.Summoner;
 
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/summoner")]
+[Route("api/summoner/")]
 public class SummonerController : Controller
 {
     private readonly ILogger<SummonerController> _logger;
@@ -14,13 +14,13 @@ public class SummonerController : Controller
         _loader = new SummonerLoader(http);
     }
 
-    [HttpGet("name")]
+    [HttpGet("{name}")]
     public Types.Summoner GetByName(string name)
     {
         return _loader.GetByName(name);
     }
 
-    [HttpGet("puuid")]
+    [HttpGet("{puuid}")]
     public Types.Summoner GetByPuuid(string puuid)
     {
         return _loader.GetByPuuid(puuid);

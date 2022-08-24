@@ -15,9 +15,7 @@ CREATE TABLE general.users
 );
 CREATE UNIQUE INDEX ON general.users ((lower(email)));
 
-CREATE SCHEMA tft;
-
-CREATE TABLE tft.teams
+CREATE TABLE general.teams
 (
     id         SERIAL PRIMARY KEY,
     name       VARCHAR(100) NOT NULL,
@@ -26,9 +24,9 @@ CREATE TABLE tft.teams
     create_on  timestamp
 );
 
-CREATE TABLE tft.team_champions
+CREATE TABLE general.team_champions
 (
     championId varchar(50) PRIMARY KEY,
-    team_id    integer REFERENCES tft.teams (id),
+    team_id    integer REFERENCES general.teams (id),
     item_ids   smallint[]
 );

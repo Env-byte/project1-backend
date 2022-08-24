@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace riot_backend.Api.Modules.Champions;
 
-[Route("api/champion")]
+[Route("api/champion/")]
 public class ChampionController : Controller
 {
     private readonly ILogger<ChampionController> _logger;
@@ -21,7 +21,7 @@ public class ChampionController : Controller
         return _loader.GetAll();
     }
 
-    [HttpGet("name")]
+    [HttpGet("{championId}")]
     public Types.Champion Get(string championId)
     {
         return _loader.Get(championId);
