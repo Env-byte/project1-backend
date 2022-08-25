@@ -4,16 +4,7 @@ using riot_backend.Api.Modules.Users.Types;
 
 namespace riot_backend.Api.Modules.Users;
 
-public interface IUserService
-{
-    IEnumerable<User> GetAll();
-    User GetById(int id);
-    User Create(User user);
-    void Update(int id, User user);
-    void Delete(int id);
-}
-
-public class UserService : IUserService
+public class UserService 
 {
     private readonly DatabaseFactory _databaseFactory;
 
@@ -41,12 +32,7 @@ public class UserService : IUserService
         return users.ToArray();
     }
 
-    public User GetById(int id)
-    {
-        return GetUser(id);
-    }
-
-    public User Create(User user)
+    public User Insert(User user)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd = new NpgsqlCommand();
@@ -62,7 +48,7 @@ public class UserService : IUserService
         cmd.Prepare();
         var val = cmd.ExecuteScalar();
         var newId = (int)(val ?? throw new InvalidOperationException());
-        return GetUser(newId);
+        return Get(newId);
     }
 
     public void Update(int id, User user)
@@ -95,7 +81,7 @@ public class UserService : IUserService
     }
 
 
-    private User GetUser(int id)
+    public User Get(int id)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =

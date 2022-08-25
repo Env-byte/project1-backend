@@ -1,7 +1,4 @@
-using System.Net;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using riot_backend_tests.Helper;
@@ -40,7 +37,7 @@ public class UserTest
             type = ELoginType.none,
             token = "123"
         };
-        var result = _usersController.Create(expected);
+        var result = _usersController.Insert(expected);
         var user = result.ToSuccess<User>();
         expected.id = user.id;
         user.Should().BeEquivalentTo(expected);
@@ -59,7 +56,7 @@ public class UserTest
             token = "123"
         };
 
-        var result = _usersController.GetById(1);
+        var result = _usersController.Get(1);
         var user = result.ToSuccess<User>();
         user.Should().BeEquivalentTo(expected);
     }
@@ -90,7 +87,7 @@ public class UserTest
             type = ELoginType.none,
             token = "123"
         };
-        var createResult = _usersController.Create(create);
+        var createResult = _usersController.Insert(create);
         var user = createResult.ToSuccess<User>();
 
         var result = _usersController.Delete(user.id);

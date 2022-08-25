@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using riot_backend.Api;
+using riot_backend.Api.Modules.Summoner;
 using riot_backend.Api.Modules.Users;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,8 +25,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors();
 
-// configure DI for application services
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<SummonerService>();
 
 
 var app = builder.Build();

@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace riot_backend.Api.Modules.Summoner.Types;
 
-public class Summoner
+public class Summoner : BaseSuccessResponse
 {
     /**
      * Encrypted summoner ID. Max length 63 characters.

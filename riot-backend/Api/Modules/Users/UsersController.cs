@@ -7,9 +7,9 @@ namespace riot_backend.Api.Modules.Users;
 [Route("api/users")]
 public class UsersController : Controller
 {
-    private readonly IUserService _userService;
+    private readonly UserService _userService;
 
-    public UsersController(IUserService userService)
+    public UsersController(UserService userService)
     {
         _userService = userService;
     }
@@ -22,16 +22,16 @@ public class UsersController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult GetById(int id)
+    public IActionResult Get(int id)
     {
-        var user = _userService.GetById(id);
+        var user = _userService.Get(id);
         return Ok(user);
     }
 
     [HttpPost]
-    public IActionResult Create(User user)
+    public IActionResult Insert(User user)
     {
-        user = _userService.Create(user);
+        user = _userService.Insert(user);
         return Ok(user);
     }
 
