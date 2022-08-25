@@ -4,6 +4,9 @@ using riot_backend.Api.Modules.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//allow dapper to match database columns
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 // Add services to the container.
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();

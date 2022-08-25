@@ -7,7 +7,7 @@ namespace riot_backend.Api.Modules.Users;
 [Route("api/users")]
 public class UsersController : Controller
 {
-    private IUserService _userService;
+    private readonly IUserService _userService;
 
     public UsersController(IUserService userService)
     {
@@ -32,20 +32,29 @@ public class UsersController : Controller
     public IActionResult Create(User user)
     {
         user = _userService.Create(user);
-        return Ok(new { user });
+        return Ok(user);
     }
 
     [HttpPut("{id:int}")]
     public IActionResult Update(int id, User user)
     {
         _userService.Update(id, user);
-        return Ok(new { message = "User updated" });
+
+        return Ok(new UpdateResponse
+        {
+            message = "User Updated",
+            id = id
+        });
     }
 
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)
     {
         _userService.Delete(id);
-        return Ok(new { message = "User deleted" });
+        return Ok(new DeleteResponse
+        {
+            message = "User Deleted",
+            id = id
+        });
     }
 }

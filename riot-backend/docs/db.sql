@@ -1,34 +1,18 @@
-create schema if not exists extensions;
 
--- make sure everybody can use everything in the extensions schema
-grant usage on schema extensions to public;
-grant execute on all functions in schema extensions to public;
+create schema if not exists test;
 
--- include future extensions
-alter default privileges in schema extensions
-    grant execute on functions to public;
-
-alter default privileges in schema extensions
-    grant usage on types to public;
-
-CREATE EXTENSION if not exists citext schema extensions;
-CREATE TYPE login_method AS ENUM ('google');
-
-
-create schema if not exists public;
-
-SET search_path TO public, extensions;
+SET search_path TO test, extensions;
 /**SET search_path TO test, extensions;**/
 CREATE TABLE if not exists users
 (
     id         SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name  VARCHAR(100) NOT NULL,
-    email      citext       NOT NULL,
-    type       login_method NOT NULL,
+    email      extensions.citext       NOT NULL,
+    type       extensions.login_method NOT NULL,
     token      text
 );
-CREATE UNIQUE INDEX ON users ((lower(email)));
+CREATE INDEX ON users ((lower(email)));
 
 CREATE TABLE if not exists teams
 (

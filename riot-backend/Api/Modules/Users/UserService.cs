@@ -15,7 +15,7 @@ public interface IUserService
 
 public class UserService : IUserService
 {
-    protected readonly DatabaseFactory _databaseFactory;
+    private readonly DatabaseFactory _databaseFactory;
 
     public UserService(IConfiguration configuration)
     {
@@ -99,7 +99,9 @@ public class UserService : IUserService
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
-            new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users WHERE @id", conn);
+            new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users WHERE id= @id", conn);
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
+        cmd.Prepare();
         using var reader = cmd.ExecuteReader();
         var parser = reader.GetRowParser<User>(typeof(User));
         //should only ever return one row
