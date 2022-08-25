@@ -1,11 +1,11 @@
 namespace riot_backend.Api.Modules.Summoner;
 
-public class SummonerLoader
+public class SummonerProvider
 {
     private readonly IHttpClientWrapper _http;
     private const string _endpoint = "/tft/summoner/v1/summoners";
 
-    public SummonerLoader(IHttpClientWrapper http)
+    public SummonerProvider(IHttpClientWrapper http)
     {
         _http = http;
     }

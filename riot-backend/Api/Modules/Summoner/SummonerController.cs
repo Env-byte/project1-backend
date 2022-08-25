@@ -6,26 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 public class SummonerController : Controller
 {
     private readonly ILogger<SummonerController> _logger;
-    private readonly SummonerLoader _loader;
     private readonly SummonerService _service;
 
-    public SummonerController(ILogger<SummonerController> logger, IHttpClientWrapper http,
-        SummonerService summonerService)
+    public SummonerController(ILogger<SummonerController> logger, SummonerService summonerService)
     {
         _logger = logger;
         _service = summonerService;
-        _loader = new SummonerLoader(http);
     }
 
     [HttpGet("{name}")]
-    public Types.Summoner GetByName(string name)
+    public IActionResult GetByName(string name)
     {
-        return _loader.GetByName(name);
+        return Ok(_service.GetByName(name));
     }
 
     [HttpGet("{puuid}")]
-    public Types.Summoner GetByPuuid(string puuid)
+    public IActionResult GetByPuuid(string puuid)
     {
-        return _loader.GetByPuuid(puuid);
+        return Ok(_service.GetByPuuid(puuid));
+    }
+
+    public IActionResult Refresh(string puuid)
+    {
+        return Ok(_service.Refresh(puuid));
+ 
     }
 }

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Npgsql;
 
 namespace riot_backend.Api.Modules.Summoner.Types;
 
@@ -51,7 +52,22 @@ public class Summoner : BaseSuccessResponse
     /**
      * url to the users icon
      */
-
     public string iconUrl =>
         "https://ddragon.leagueoflegends.com/cdn/12.15.1/img/profileicon/" + profileIconId + ".png";
+
+    public DateTime lastUpdate { get; set; }
+
+    public static Summoner FromSqlReader(NpgsqlDataReader reader)
+    {
+        return new Summoner()
+        {
+            id = reader.GetString(0),
+            accountId = reader.GetString(1),
+            puuid = reader.GetString(2),
+            name = reader.GetString(3),
+            profileIconId = reader.GetInt32(4),
+            revisionDate = reader.GetInt64(5),
+            summonerLevel = reader.GetInt64(6),
+        };
+    }
 }

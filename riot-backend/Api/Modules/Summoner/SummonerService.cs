@@ -1,58 +1,74 @@
+using System.ComponentModel;
 using Npgsql;
 
 namespace riot_backend.Api.Modules.Summoner;
 
 public class SummonerService
 {
-    private readonly DatabaseFactory _databaseFactory;
+    private readonly SummonerRepository _summonerRepository;
+    private readonly SummonerProvider _summonerProvider;
 
-    public SummonerService(IConfiguration configuration)
+    public SummonerService(IConfiguration configuration, IHttpClientWrapper http)
     {
-        _databaseFactory = new DatabaseFactory(configuration);
+        _summonerRepository = new SummonerRepository(configuration);
+        _summonerProvider = new SummonerProvider(http);
     }
 
-    public Types.SummonerResponse GetSummoner()
+    public Types.SummonerResponse GetByName(string name)
     {
-    }
-
-    private void Insert(Types.Summoner summoner)
-    {
-        using var conn = _databaseFactory.GetDatabase();
-        using var cmd = new NpgsqlCommand();
-        cmd.CommandText =
-            "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level);";
-        cmd.Connection = conn;
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = summoner.id });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "account_id", Value = summoner.accountId });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summoner.puuid });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = summoner.name });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "profile_icon_id", Value = summoner.profileIconId });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "revision_date", Value = summoner.revisionDate });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "summoner_level", Value = summoner.summonerLevel });
-        cmd.Prepare();
-        cmd.ExecuteNonQuery();
-    }
-
-    private Types.Summoner Get(string id)
-    {
-        using var conn = _databaseFactory.GetDatabase();
-        using var cmd =
-            new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users WHERE id= @id", conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
-        cmd.Prepare();
-        
-        using var reader = cmd.ExecuteReader();
-        
-        //should only ever return one row
-        if (!reader.HasRows) throw new KeyNotFoundException("Summoner with id:  " + id + " not found.");
-       
-        reader.Read();
-        var summoner = new Types.Summoner()
+        Types.SummonerResponse summoner;
+        try
         {
-        };
+            summoner = (Types.SummonerResponse)_summonerRepository.GetByName(name);
+        }
+        catch (KeyNotFoundException e)
+        {
+            var providerResponse = _summonerProvider.GetByName(name);
+            _summonerRepository.Insert(providerResponse);
+            summoner = (Types.SummonerResponse)providerResponse;
+        }
 
-        // get first user
         return summoner;
+    }
 
+    public Types.SummonerResponse GetByPuuid(string puuid)
+    {
+        Types.SummonerResponse summoner;
+        try
+        {
+            summoner = (Types.SummonerResponse)_summonerRepository.GetByPuuid(puuid);
+        }
+        catch (KeyNotFoundException e)
+        {
+            var providerResponse = _summonerProvider.GetByPuuid(puuid);
+            _summonerRepository.Insert(providerResponse);
+            summoner = (Types.SummonerResponse)providerResponse;
+        }
+
+        return summoner;
+    }
+
+    /**
+     * Refresh data using provider. must wait 5 mins between refreshes
+     */
+    public Types.SummonerResponse Refresh(string puuid)
+    {
+        var summoner = (Types.SummonerResponse)_summonerRepository.GetByPuuid(puuid);
+        //12:30 last update 12:35
+        // 12:32 now 
+        var nextUpdate = summoner.lastUpdate.AddMinutes(5);
+        if (nextUpdate > DateTime.Now)
+        {
+            var ts = nextUpdate - DateTime.Now;
+
+            throw new WarningException(
+                "Please wait " + ts.TotalSeconds + " second(s) before trying to refresh this summoner again.");
+        }
+
+        _summonerProvider.GetByPuuid(puuid);
+        summoner.lastUpdate = DateTime.Now;
+        _summonerRepository.Update(puuid, summoner);
+
+        return summoner;
     }
 }
