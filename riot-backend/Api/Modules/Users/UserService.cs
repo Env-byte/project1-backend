@@ -13,11 +13,18 @@ public interface IUserService
     void Delete(int id);
 }
 
-public class UserService<T> : IUserService where T : IDatabaseWrapper, new()
+public class UserService : IUserService
 {
+    protected readonly DatabaseFactory _databaseFactory;
+
+    public UserService(IConfiguration configuration)
+    {
+        _databaseFactory = new DatabaseFactory(configuration);
+    }
+
     public IEnumerable<User> GetAll()
     {
-        using var conn = DatabaseFactory.Get<T>();
+        using var conn = _databaseFactory.GetDatabase();
         using var cmd = new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users", conn);
         using var reader = cmd.ExecuteReader();
         var parser = reader.GetRowParser<User>(typeof(User));
@@ -41,7 +48,7 @@ public class UserService<T> : IUserService where T : IDatabaseWrapper, new()
 
     public User Create(User user)
     {
-        using var conn = DatabaseFactory.Get<T>();
+        using var conn = _databaseFactory.GetDatabase();
         using var cmd = new NpgsqlCommand();
         cmd.CommandText =
             "INSERT INTO users (first_name,last_name,email,type,token) values (@first_name,@last_name,@email,@type,@token) returning id;";
@@ -60,7 +67,7 @@ public class UserService<T> : IUserService where T : IDatabaseWrapper, new()
 
     public void Update(int id, User user)
     {
-        using var conn = DatabaseFactory.Get<T>();
+        using var conn = _databaseFactory.GetDatabase();
         using var cmd = new NpgsqlCommand();
         cmd.CommandText =
             "UPDATE users SET first_name= :first_name, last_name= :last_name, email = :email WHERE id = @id";
@@ -78,7 +85,7 @@ public class UserService<T> : IUserService where T : IDatabaseWrapper, new()
 
     public void Delete(int id)
     {
-        using var conn = DatabaseFactory.Get<T>();
+        using var conn = _databaseFactory.GetDatabase();
         using var cmd = new NpgsqlCommand();
         cmd.CommandText = "DELETE FROM users  WHERE id = @id";
         cmd.Connection = conn;
@@ -88,9 +95,9 @@ public class UserService<T> : IUserService where T : IDatabaseWrapper, new()
     }
 
 
-    private static User GetUser(int id)
+    private User GetUser(int id)
     {
-        using var conn = DatabaseFactory.Get<T>();
+        using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand($"SELECT id,first_name,last_name,email,type,token FROM users WHERE @id", conn);
         using var reader = cmd.ExecuteReader();
