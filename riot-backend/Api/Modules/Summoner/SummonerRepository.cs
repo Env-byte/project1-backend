@@ -31,7 +31,7 @@ public class SummonerRepository
         cmd.ExecuteNonQuery();
     }
 
-    public Types.Summoner Get(string id)
+    public bool Get(string id, ref Types.Summoner summonerOut)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
@@ -44,13 +44,13 @@ public class SummonerRepository
         using var reader = cmd.ExecuteReader();
 
         //should only ever return one row
-        if (!reader.HasRows) throw new KeyNotFoundException("Summoner with id:  " + id + " not found.");
+        if (!reader.HasRows) return false;
         reader.Read();
-
-        return Types.Summoner.FromSqlReader(reader);
+        Types.Summoner.FromSqlReader(reader);
+        return true;
     }
 
-    public Types.Summoner GetByName(string name)
+    public bool GetByName(string name, ref Types.Summoner summonerOut)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
@@ -62,13 +62,13 @@ public class SummonerRepository
 
         using var reader = cmd.ExecuteReader();
         //should only ever return one row
-        if (!reader.HasRows) throw new KeyNotFoundException("Summoner with name:  " + name + " not found.");
+        if (!reader.HasRows) return false;
         reader.Read();
-
-        return Types.Summoner.FromSqlReader(reader);
+        summonerOut = Types.Summoner.FromSqlReader(reader);
+        return true;
     }
 
-    public Types.Summoner GetByPuuid(string puuid)
+    public bool GetByPuuid(string puuid, ref Types.Summoner summonerOut)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
@@ -80,10 +80,14 @@ public class SummonerRepository
         using var reader = cmd.ExecuteReader();
 
         //should only ever return one row
-        if (!reader.HasRows) throw new KeyNotFoundException("Summoner with name:  " + puuid + " not found.");
-        reader.Read();
+        if (!reader.HasRows)
+        {
+            return false;
+        }
 
-        return Types.Summoner.FromSqlReader(reader);
+        reader.Read();
+        summonerOut = Types.Summoner.FromSqlReader(reader);
+        return true;
     }
 
     public void Update(string puuid, Types.Summoner summoner)

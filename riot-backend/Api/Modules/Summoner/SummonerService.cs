@@ -16,36 +16,35 @@ public class SummonerService
 
     public Types.SummonerResponse GetByName(string name)
     {
-        Types.SummonerResponse summoner;
-        try
-        {
-            summoner = (Types.SummonerResponse)_summonerRepository.GetByName(name);
-        }
-        catch (KeyNotFoundException e)
+        var summoner = new Types.Summoner();
+
+        var found = _summonerRepository.GetByName(name, ref summoner);
+        if (!found)
         {
             var providerResponse = _summonerProvider.GetByName(name);
             _summonerRepository.Insert(providerResponse);
             summoner = (Types.SummonerResponse)providerResponse;
         }
 
-        return summoner;
+        var summonerResponse = (Types.SummonerResponse)summoner;
+        return summonerResponse;
     }
 
     public Types.SummonerResponse GetByPuuid(string puuid)
     {
-        Types.SummonerResponse summoner;
-        try
-        {
-            summoner = (Types.SummonerResponse)_summonerRepository.GetByPuuid(puuid);
-        }
-        catch (KeyNotFoundException e)
+        var summoner = new Types.Summoner();
+
+        var found = _summonerRepository.GetByPuuid(puuid, ref summoner);
+
+        if (!found)
         {
             var providerResponse = _summonerProvider.GetByPuuid(puuid);
             _summonerRepository.Insert(providerResponse);
-            summoner = (Types.SummonerResponse)providerResponse;
+            summoner = providerResponse;
         }
 
-        return summoner;
+        var summonerResponse = (Types.SummonerResponse)summoner;
+        return summonerResponse;
     }
 
     /**
@@ -53,7 +52,14 @@ public class SummonerService
      */
     public Types.SummonerResponse Refresh(string puuid)
     {
-        var summoner = (Types.SummonerResponse)_summonerRepository.GetByPuuid(puuid);
+        var summoner = new Types.Summoner();
+
+        var found = _summonerRepository.GetByPuuid(puuid, ref summoner);
+        if (!found)
+        {
+            throw new KeyNotFoundException("Could not refresh summoner with puuid: " + puuid + " as it does not exist");
+        }
+
         //12:30 last update 12:35
         // 12:32 now 
         var nextUpdate = summoner.lastUpdate.AddMinutes(5);
@@ -65,10 +71,11 @@ public class SummonerService
                 "Please wait " + ts.TotalSeconds + " second(s) before trying to refresh this summoner again.");
         }
 
-        _summonerProvider.GetByPuuid(puuid);
+        summoner = _summonerProvider.GetByPuuid(puuid);
         summoner.lastUpdate = DateTime.Now;
         _summonerRepository.Update(puuid, summoner);
 
-        return summoner;
+        var summonerResponse = (Types.SummonerResponse)summoner;
+        return summonerResponse;
     }
 }
