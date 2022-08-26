@@ -23,4 +23,10 @@ public class MatchMetadata
     [JsonProperty("participants")]
     public List<string> participants { get; set; }
     
+    /**
+     * A list of participant objects.
+     */
+    [JsonProperty("summoners")]
+    public List<Summoner.Types.Summoner> summoners { get; set; }
+    
 }

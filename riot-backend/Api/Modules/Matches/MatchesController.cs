@@ -1,28 +1,36 @@
+using System.Text.RegularExpressions;
+
 namespace riot_backend.Api.Modules.Matches;
 
 using Microsoft.AspNetCore.Mvc;
 
-[Route("api/matches/")]
+[Route("api/match/")]
 public class MatchesController : Controller
 {
     private readonly ILogger<MatchesController> _logger;
-    private readonly MatchLoader _loader;
+    private readonly MatchService _matchService;
 
-    public MatchesController(ILogger<MatchesController> logger, IHttpClientWrapper http)
+    public MatchesController(ILogger<MatchesController> logger, MatchService matchService)
     {
         _logger = logger;
-        _loader = new MatchLoader(http);
+        _matchService = matchService;
     }
 
-    [HttpGet("{name}")]
-    public Types.Match GetMatch(string name)
+    [HttpGet("{summonerPuuid}")]
+    public IActionResult GetMatchPuuid(string summonerPuuid)
     {
-        return _loader.GetMatch(name);
+        return Ok(_matchService.GetMatches(_matchService.GetMatchPuuids(summonerPuuid)));
     }
 
-    [HttpGet("{puuid}")]
-    public List<string> GetMatches(string puuid)
+    [HttpGet("{matchPuuid}")]
+    public IActionResult GetMatch(string matchPuuid)
     {
-        return _loader.GetMatches(puuid);
+        return Ok(_matchService.GetMatch(matchPuuid));
+    }
+
+    [HttpGet("{summonerName}")]
+    public IActionResult GetMatchesByName(string summonerName)
+    {
+        return Ok(_matchService.GetMatchesByName(summonerName));
     }
 }

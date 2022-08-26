@@ -44,7 +44,6 @@ public class SummonerRepository
         if (!reader.HasRows) return null;
         reader.Read();
         return Types.Summoner.FromSqlReader(reader);
-        ;
     }
 
     public Types.Summoner? GetByPuuid(string puuid)
@@ -87,7 +86,32 @@ public class SummonerRepository
 
     public Tuple<List<string>, List<Types.Summoner>> GetByPuuid(List<string> puuids)
     {
-        throw new NotImplementedException();
+        var summoners = new List<Types.Summoner>();
+
+
+        using var conn = _databaseFactory.GetDatabase();
+        using var cmd =
+            new NpgsqlCommand(
+                "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid in (@puuid)",
+                conn);
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = string.Join(',', puuids) });
+        cmd.Prepare();
+        using var reader = cmd.ExecuteReader();
+
+        if (!reader.HasRows)
+        {
+            return new Tuple<List<string>, List<Types.Summoner>>(puuids, summoners);
+        }
+
+        reader.Read();
+        while (reader.Read())
+        {
+            var summoner = Types.Summoner.FromSqlReader(reader);
+            summoners.Add(summoner);
+            puuids.Remove(summoner.puuid);
+        }
+
+        return new Tuple<List<string>, List<Types.Summoner>>(puuids, summoners);
     }
 
     public void Insert(List<Types.Summoner> newSummoners)

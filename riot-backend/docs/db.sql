@@ -43,8 +43,8 @@ CREATE TABLE if not exists summoners
 
 CREATE TABLE if not exists match
 (
-    id   varchar(150),
-    data json
+    puuid varchar(78),
+    data  json
 );
 /**
   store the last 20 matches for the summoner here. 
@@ -52,7 +52,6 @@ CREATE TABLE if not exists match
  */
 CREATE table if not exists summoner_matches
 (
-    summoner_id varchar(65) not null,
-    match_id    varchar(150)
-
+    summoner_puuid varchar(78) not null,
+    match_puuid    varchar(78)
 )
