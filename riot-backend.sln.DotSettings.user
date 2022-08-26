@@ -6,4 +6,6 @@
   &lt;TestAncestor&gt;
     &lt;TestId&gt;NUnit3x::3EB8F943-5839-4776-AD13-3827CF451660::net6.0::riot_backend_tests.UserTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=puuid/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=puuids/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

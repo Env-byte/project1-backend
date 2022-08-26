@@ -16,10 +16,8 @@ public class SummonerService
 
     public Types.SummonerResponse GetByName(string name)
     {
-        var summoner = new Types.Summoner();
-
-        var found = _summonerRepository.GetByName(name, ref summoner);
-        if (!found)
+        var summoner = _summonerRepository.GetByName(name);
+        if (summoner == null)
         {
             var providerResponse = _summonerProvider.GetByName(name);
             _summonerRepository.Insert(providerResponse);
@@ -30,32 +28,13 @@ public class SummonerService
         return summonerResponse;
     }
 
-    public Types.SummonerResponse GetByPuuid(string puuid)
-    {
-        var summoner = new Types.Summoner();
-
-        var found = _summonerRepository.GetByPuuid(puuid, ref summoner);
-
-        if (!found)
-        {
-            var providerResponse = _summonerProvider.GetByPuuid(puuid);
-            _summonerRepository.Insert(providerResponse);
-            summoner = providerResponse;
-        }
-
-        var summonerResponse = (Types.SummonerResponse)summoner;
-        return summonerResponse;
-    }
-
     /**
-     * Refresh data using provider. must wait 5 mins between refreshes
+     * Refresh data using provider. must wait 5 minutes between refreshes
      */
     public Types.SummonerResponse Refresh(string puuid)
     {
-        var summoner = new Types.Summoner();
-
-        var found = _summonerRepository.GetByPuuid(puuid, ref summoner);
-        if (!found)
+        var summoner = _summonerRepository.GetByPuuid(puuid);
+        if (summoner == null)
         {
             throw new KeyNotFoundException("Could not refresh summoner with puuid: " + puuid + " as it does not exist");
         }
@@ -77,5 +56,28 @@ public class SummonerService
 
         var summonerResponse = (Types.SummonerResponse)summoner;
         return summonerResponse;
+    }
+    
+    public Types.SummonerResponse GetByPuuid(string puuid)
+    {
+        var summoner = _summonerRepository.GetByPuuid(puuid);
+
+        if (summoner == null)
+        {
+            var providerResponse = _summonerProvider.GetByPuuid(puuid);
+            _summonerRepository.Insert(providerResponse);
+            summoner = providerResponse;
+        }
+
+        var summonerResponse = (Types.SummonerResponse)summoner;
+        return summonerResponse;
+    }
+
+    public List<Types.Summoner> GetByPuuid(List<string> puuids)
+    {
+        var (notFound, summoners) = _summonerRepository.GetByPuuid(puuids);
+        var newSummoners = notFound.Select(puuid => _summonerProvider.GetByPuuid(puuid)).ToList();
+        _summonerRepository.Insert(newSummoners);
+        return summoners.Concat(newSummoners).ToList();
     }
 }

@@ -1,5 +1,4 @@
 using Npgsql;
-using riot_backend.Api.Modules.Summoner.Types;
 
 namespace riot_backend.Api.Modules.Summoner;
 
@@ -12,26 +11,7 @@ public class SummonerRepository
         _databaseFactory = new DatabaseFactory(configuration);
     }
 
-
-    public void Insert(Types.Summoner summoner)
-    {
-        using var conn = _databaseFactory.GetDatabase();
-        using var cmd = new NpgsqlCommand();
-        cmd.CommandText =
-            "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level);";
-        cmd.Connection = conn;
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = summoner.id });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "account_id", Value = summoner.accountId });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summoner.puuid });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = summoner.name });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "profile_icon_id", Value = summoner.profileIconId });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "revision_date", Value = summoner.revisionDate });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "summoner_level", Value = summoner.summonerLevel });
-        cmd.Prepare();
-        cmd.ExecuteNonQuery();
-    }
-
-    public bool Get(string id, ref Types.Summoner summonerOut)
+    public Types.Summoner? Get(string id)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
@@ -44,13 +24,12 @@ public class SummonerRepository
         using var reader = cmd.ExecuteReader();
 
         //should only ever return one row
-        if (!reader.HasRows) return false;
+        if (!reader.HasRows) return null;
         reader.Read();
-        Types.Summoner.FromSqlReader(reader);
-        return true;
+        return Types.Summoner.FromSqlReader(reader);
     }
 
-    public bool GetByName(string name, ref Types.Summoner summonerOut)
+    public Types.Summoner? GetByName(string name)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
@@ -62,13 +41,13 @@ public class SummonerRepository
 
         using var reader = cmd.ExecuteReader();
         //should only ever return one row
-        if (!reader.HasRows) return false;
+        if (!reader.HasRows) return null;
         reader.Read();
-        summonerOut = Types.Summoner.FromSqlReader(reader);
-        return true;
+        return Types.Summoner.FromSqlReader(reader);
+        ;
     }
 
-    public bool GetByPuuid(string puuid, ref Types.Summoner summonerOut)
+    public Types.Summoner? GetByPuuid(string puuid)
     {
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
@@ -82,12 +61,11 @@ public class SummonerRepository
         //should only ever return one row
         if (!reader.HasRows)
         {
-            return false;
+            return null;
         }
 
         reader.Read();
-        summonerOut = Types.Summoner.FromSqlReader(reader);
-        return true;
+        return Types.Summoner.FromSqlReader(reader);
     }
 
     public void Update(string puuid, Types.Summoner summoner)
@@ -105,5 +83,42 @@ public class SummonerRepository
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "last_update", Value = summoner.lastUpdate });
         cmd.Prepare();
         cmd.ExecuteNonQuery();
+    }
+
+    public Tuple<List<string>, List<Types.Summoner>> GetByPuuid(List<string> puuids)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Insert(List<Types.Summoner> newSummoners)
+    {
+        using var conn = _databaseFactory.GetDatabase();
+        var transaction = conn.BeginTransaction();
+        foreach (var summoner in newSummoners)
+        {
+            using var cmd = new NpgsqlCommand();
+            cmd.CommandText =
+                "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level);";
+            cmd.Connection = conn;
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = summoner.id });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "account_id", Value = summoner.accountId });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summoner.puuid });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = summoner.name });
+            cmd.Parameters.Add(
+                new NpgsqlParameter { ParameterName = "profile_icon_id", Value = summoner.profileIconId });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "revision_date", Value = summoner.revisionDate });
+            cmd.Parameters.Add(new NpgsqlParameter
+                { ParameterName = "summoner_level", Value = summoner.summonerLevel });
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+        }
+
+        transaction.Commit();
+    }
+
+
+    public void Insert(Types.Summoner summoner)
+    {
+        Insert(new List<Types.Summoner> { summoner });
     }
 }
