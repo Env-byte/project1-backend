@@ -1,4 +1,6 @@
 using Npgsql;
+using NpgsqlTypes;
+using riot_backend.helpers;
 
 namespace riot_backend.Api.Modules.Summoner;
 
@@ -34,7 +36,7 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE lower(name)= lower(@name)",
+                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE lower(replace(name,' ',''))= lower(@name)",
                 conn);
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = name });
         cmd.Prepare();
@@ -51,7 +53,7 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid= @puuid",
+                "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid=@puuid",
                 conn);
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = puuid });
         cmd.Prepare();
@@ -92,18 +94,12 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid in (@puuid)",
+                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid =any(:puuid)",
                 conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = string.Join(',', puuids) });
+        cmd.Parameters.AddWithValue("puuid", NpgsqlDbType.Text | NpgsqlDbType.Array, puuids.ToArray());
         cmd.Prepare();
         using var reader = cmd.ExecuteReader();
 
-        if (!reader.HasRows)
-        {
-            return new Tuple<List<string>, List<Types.Summoner>>(puuids, summoners);
-        }
-
-        reader.Read();
         while (reader.Read())
         {
             var summoner = Types.Summoner.FromSqlReader(reader);

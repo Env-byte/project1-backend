@@ -16,21 +16,21 @@ public class MatchesController : Controller
         _matchService = matchService;
     }
 
-    [HttpGet("{summonerPuuid}")]
-    public IActionResult GetMatchPuuid(string summonerPuuid)
+    [HttpGet("summonerPuuid/{puuid}")]
+    public IActionResult GetMatchPuuid(string puuid)
     {
-        return Ok(_matchService.GetMatches(_matchService.GetMatchPuuids(summonerPuuid)));
+        return Ok(_matchService.GetMatches(_matchService.GetMatchPuuids(puuid)));
     }
 
-    [HttpGet("{matchPuuid}")]
-    public IActionResult GetMatch(string matchPuuid)
+    [HttpGet("match/{puuid}")]
+    public IActionResult GetMatch(string puuid)
     {
-        return Ok(_matchService.GetMatch(matchPuuid));
+        return Ok(_matchService.GetMatch(puuid));
     }
 
-    [HttpGet("{summonerName}")]
-    public IActionResult GetMatchesByName(string summonerName)
+    [HttpGet("summonerName/{name}")]
+    public IActionResult GetMatchesByName(string name)
     {
-        return Ok(_matchService.GetMatchesByName(summonerName));
+        return Ok(_matchService.GetMatchesByName(name));
     }
 }

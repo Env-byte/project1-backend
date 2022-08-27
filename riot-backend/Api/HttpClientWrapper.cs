@@ -6,17 +6,19 @@ namespace riot_backend.Api;
 public class HttpClientWrapper : IHttpClientWrapper
 {
     private readonly IHttpClientFactory _factory;
+    private readonly IConfiguration _configuration;
 
-    public HttpClientWrapper(IHttpClientFactory factory)
+    public HttpClientWrapper(IHttpClientFactory factory, IConfiguration configuration)
     {
         _factory = factory;
+        _configuration = configuration;
     }
 
 
     private async Task<string> _ExecGet(string url)
     {
         using var client = _factory.CreateClient();
-        client.DefaultRequestHeaders.Add("X-Riot-Token", Config.ApiKey);
+        client.DefaultRequestHeaders.Add("X-Riot-Token", _configuration.GetConnectionString("RiotKey"));
         var response = await client.GetAsync(url);
         if (response.StatusCode != HttpStatusCode.OK)
         {

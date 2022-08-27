@@ -1,6 +1,6 @@
-create schema if not exists test;
+create schema if not exists public;
 
-SET search_path TO test, extensions;
+SET search_path TO public, extensions;
 /**SET search_path TO test, extensions;**/
 CREATE TABLE if not exists users
 (
@@ -24,10 +24,11 @@ CREATE TABLE if not exists teams
 
 CREATE TABLE if not exists team_champions
 (
-    championId varchar(50) PRIMARY KEY,
+    championId varchar(50) not null,
     team_id    integer REFERENCES teams (id),
     item_ids   smallint[]
 );
+create index on team_champions (team_id);
 
 CREATE TABLE if not exists summoners
 (
@@ -40,12 +41,16 @@ CREATE TABLE if not exists summoners
     summoner_level  bigint       not null,
     last_update     timestamp default now()
 );
+create unique index on summoners (puuid);
+
 
 CREATE TABLE if not exists match
 (
     puuid varchar(78),
-    data  json
+    data  text
 );
+create unique index on match (puuid);
+
 /**
   store the last 20 matches for the summoner here. 
   once a row from the matches table has 0 references in this table delete that row.
@@ -54,4 +59,5 @@ CREATE table if not exists summoner_matches
 (
     summoner_puuid varchar(78) not null,
     match_puuid    varchar(78)
-)
+);
+create unique index on summoner_matches (summoner_puuid, match_puuid);

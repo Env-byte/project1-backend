@@ -14,12 +14,14 @@ public class MatchService
     {
         _matchRepository = new MatchRepository(configuration);
         _matchProvider = new MatchProvider(http);
-        _summonerService = new SummonerService(configuration, http);
+        _summonerService = summonerService;
     }
 
     public List<Match> GetMatches(List<string> matchPuuid)
     {
         var (matchesNotFound, matches) = _matchRepository.GetMatches(matchPuuid);
+        Console.WriteLine(matchesNotFound.ToString());
+
         var newMatch = matchesNotFound.Select(puuid => _matchProvider.GetMatch(puuid)).ToList();
         _matchRepository.Insert(newMatch);
         matches = matches.Concat(newMatch).ToList();

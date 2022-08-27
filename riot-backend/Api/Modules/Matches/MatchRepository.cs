@@ -1,5 +1,8 @@
+using System.Data;
 using Newtonsoft.Json;
 using Npgsql;
+using NpgsqlTypes;
+using riot_backend.helpers;
 using Match = riot_backend.Api.Modules.Matches.Types.Match;
 
 namespace riot_backend.Api.Modules.Matches;
@@ -29,26 +32,30 @@ public class MatchRepository
         var transaction = conn.BeginTransaction();
         foreach (var match in matches)
         {
+            var json = JsonConvert.SerializeObject(match);
             using var cmd = new NpgsqlCommand();
             cmd.CommandText =
                 "INSERT INTO match (puuid,data) values (@puuid,@data);";
             cmd.Connection = conn;
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = match.metadata.matchId });
             cmd.Parameters.Add(new NpgsqlParameter
-                { ParameterName = "data", Value = JsonConvert.SerializeObject(match) });
+            {
+                ParameterName = "data", Value = json, NpgsqlDbType = NpgsqlDbType.Jsonb
+            });
             cmd.Prepare();
             cmd.ExecuteNonQuery();
             foreach (var participant in match.metadata.participants)
             {
-                cmd.CommandText =
+                using var cmd2 = new NpgsqlCommand();
+                cmd2.CommandText =
                     "INSERT INTO summoner_matches (match_puuid,summoner_puuid) values (@match_puuid,@summoner_puuid);";
-                cmd.Connection = conn;
-                cmd.Parameters.Add(
+                cmd2.Connection = conn;
+                cmd2.Parameters.Add(
                     new NpgsqlParameter { ParameterName = "match_puuid", Value = match.metadata.matchId });
-                cmd.Parameters.Add(new NpgsqlParameter
+                cmd2.Parameters.Add(new NpgsqlParameter
                     { ParameterName = "summoner_puuid", Value = participant });
-                cmd.Prepare();
-                cmd.ExecuteNonQuery();
+                cmd2.Prepare();
+                cmd2.ExecuteNonQuery();
             }
         }
 
@@ -63,28 +70,24 @@ public class MatchRepository
     {
         var matches = new List<Match>();
 
-
         using var conn = _databaseFactory.GetDatabase();
-        using var cmd = new NpgsqlCommand("SELECT puuid,data FROM match WHERE puuid in (@puuid)", conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = string.Join(',', puuids) });
+        using var cmd = new NpgsqlCommand($"SELECT puuid,CAST(data AS text) FROM match WHERE  puuid = ANY(:puuid);",
+            conn);
+        cmd.Parameters.AddWithValue("puuid", NpgsqlDbType.Text | NpgsqlDbType.Array, puuids.ToArray());
         cmd.Prepare();
-
         using var reader = cmd.ExecuteReader();
-        //should only ever return one row
 
-        if (!reader.HasRows)
-        {
-            return new Tuple<List<string>, List<Match>>(puuids, matches);
-        }
-
-        reader.Read();
         while (reader.Read())
         {
-            var match = JsonConvert.DeserializeObject<Match>(reader.GetString(2));
+            var match = JsonConvert.DeserializeObject<Match>(reader.GetString(1));
             if (match == null) continue;
             matches.Add(match);
             puuids.Remove(match.metadata.matchId);
         }
+
+        Console.WriteLine("matches length: " + matches.Count);
+        Console.WriteLine("puuids length: " + puuids.Count);
+
 
         return new Tuple<List<string>, List<Match>>(puuids, matches);
     }

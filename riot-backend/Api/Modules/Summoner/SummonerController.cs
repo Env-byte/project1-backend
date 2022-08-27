@@ -14,21 +14,21 @@ public class SummonerController : Controller
         _service = summonerService;
     }
 
-    [HttpGet("{name}")]
+    [HttpGet("name/{name}")]
     public IActionResult GetByName(string name)
     {
         return Ok(_service.GetByName(name));
     }
 
-    [HttpGet("{puuid}")]
+    [HttpGet("puuid/{puuid}")]
     public IActionResult GetByPuuid(string puuid)
     {
         return Ok(_service.GetByPuuid(puuid));
     }
 
+    [HttpGet("{puuid}/refresh")]
     public IActionResult Refresh(string puuid)
     {
         return Ok(_service.Refresh(puuid));
- 
     }
 }

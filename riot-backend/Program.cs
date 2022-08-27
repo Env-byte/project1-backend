@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using riot_backend.Api;
+using riot_backend.Api.Modules.Matches;
 using riot_backend.Api.Modules.Summoner;
 using riot_backend.Api.Modules.Users;
 
@@ -27,6 +28,8 @@ builder.Services.AddCors();
 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SummonerService>();
+builder.Services.AddScoped<MatchService>();
+builder.Services.AddScoped<SummonerRepository>();
 
 
 var app = builder.Build();

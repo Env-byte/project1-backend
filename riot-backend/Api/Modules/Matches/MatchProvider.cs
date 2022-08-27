@@ -13,13 +13,13 @@ public class MatchProvider
 
     public Types.Match GetMatch(string matchId)
     {
-        var url = Config.TFTEndpoints[0, 1] + Endpoint + "/" + Uri.EscapeDataString(matchId);
+        var url = Config.TftEndpoints[0, 1] + Endpoint + "/" + Uri.EscapeDataString(matchId);
         return _http.Get<Types.Match>(url);
     }
 
     public List<string> GetMatches(string puuid)
     {
-        var url = Config.TFTEndpoints[0, 1] + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid) +
+        var url = Config.TftEndpoints[0, 1] + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid) +
                   "/ids?start=0&count=20";
         return _http.Get<List<string>>(url);
     }
