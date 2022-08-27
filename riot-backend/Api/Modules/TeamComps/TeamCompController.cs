@@ -2,9 +2,9 @@ namespace riot_backend.Api.Modules.TeamComps;
 
 public class TeamCompsController
 {
-    private readonly TeamCompsService _teamCompsService;
+    private readonly TeamCompService _teamCompsService;
 
-    public TeamCompsController(TeamCompsService teamCompsService)
+    public TeamCompsController(TeamCompService teamCompsService)
     {
         _teamCompsService = teamCompsService;
     }

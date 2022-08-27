@@ -4,11 +4,11 @@ using riot_backend.Api.Modules.Items.Types;
 
 namespace riot_backend.Api.Modules.Items;
 
-public class ItemLoader
+public class ItemProvider
 {
     private List<Item> items { get; }
 
-    public ItemLoader()
+    public ItemProvider()
     {
         var path = AppContext.BaseDirectory + "/Cache/items.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
