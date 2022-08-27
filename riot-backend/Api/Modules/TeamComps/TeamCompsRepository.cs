@@ -1,6 +1,6 @@
 namespace riot_backend.Api.Modules.TeamComps;
 
-public class TeamCompsLoader
+public class TeamCompsRepository
 {
     
 }

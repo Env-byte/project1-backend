@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using riot_backend.Api;
 using riot_backend.Api.Modules.Matches;
 using riot_backend.Api.Modules.Summoner;
+using riot_backend.Api.Modules.TeamComps;
 using riot_backend.Api.Modules.Traits;
 using riot_backend.Api.Modules.Users;
 
@@ -33,11 +34,13 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SummonerService>();
 builder.Services.AddScoped<MatchService>();
 builder.Services.AddScoped<TraitService>();
+builder.Services.AddScoped<TeamCompsService>();
 
 //add repository's
 builder.Services.AddScoped<SummonerRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<MatchRepository>();
+builder.Services.AddScoped<TeamCompsRepository>();
 
 //add providers
 builder.Services.AddScoped<SummonerProvider>();
