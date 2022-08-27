@@ -11,9 +11,9 @@ public class MatchRepository
 {
     private readonly DatabaseFactory _databaseFactory;
 
-    public MatchRepository(IConfiguration configuration)
+    public MatchRepository(DatabaseFactory database)
     {
-        _databaseFactory = new DatabaseFactory(configuration);
+        _databaseFactory = database;
     }
 
     public Match? GetMatch(string puuid)

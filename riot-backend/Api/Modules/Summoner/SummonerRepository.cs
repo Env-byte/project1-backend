@@ -1,6 +1,5 @@
 using Npgsql;
 using NpgsqlTypes;
-using riot_backend.helpers;
 
 namespace riot_backend.Api.Modules.Summoner;
 
@@ -8,9 +7,9 @@ public class SummonerRepository
 {
     private readonly DatabaseFactory _databaseFactory;
 
-    public SummonerRepository(IConfiguration configuration)
+    public SummonerRepository(DatabaseFactory databaseFactory)
     {
-        _databaseFactory = new DatabaseFactory(configuration);
+        _databaseFactory = databaseFactory;
     }
 
     public Types.Summoner? Get(string id)

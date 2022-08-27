@@ -9,9 +9,9 @@ public class SummonerService
     private readonly SummonerRepository _summonerRepository;
     private readonly SummonerProvider _summonerProvider;
 
-    public SummonerService(IConfiguration configuration, SummonerProvider summonerProvider)
+    public SummonerService(SummonerRepository summonerRepository, SummonerProvider summonerProvider)
     {
-        _summonerRepository = new SummonerRepository(configuration);
+        _summonerRepository = summonerRepository;
         _summonerProvider = summonerProvider;
     }
 

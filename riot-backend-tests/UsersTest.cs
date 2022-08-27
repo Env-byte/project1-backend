@@ -23,7 +23,7 @@ public class UserTest
                 reloadOnChange: false)
             .Build();
 
-        _usersController = new UsersController(new UserService(configuration));
+        _usersController = new UsersController(new UserService(new UserRepository(configuration)));
     }
 
     [Test]

@@ -12,6 +12,7 @@ Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 // Add services to the container.
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpClientWrapper, HttpClientWrapper>();
+builder.Services.AddSingleton<DatabaseFactory>();
 
 builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(x =>
@@ -26,10 +27,18 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors();
 
+//add services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SummonerService>();
 builder.Services.AddScoped<MatchService>();
+
+//add repository's
 builder.Services.AddScoped<SummonerRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<MatchRepository>();
+
+//add providers
+builder.Services.AddScoped<SummonerProvider>();
 
 
 var app = builder.Build();

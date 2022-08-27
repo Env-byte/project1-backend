@@ -6,9 +6,9 @@ public class UserService
 {
     private readonly UserRepository _userRepository;
 
-    public UserService(IConfiguration configuration)
+    public UserService(UserRepository userRepository)
     {
-        _userRepository = new UserRepository(configuration);
+        _userRepository = userRepository;
     }
 
     public User Get(int id)

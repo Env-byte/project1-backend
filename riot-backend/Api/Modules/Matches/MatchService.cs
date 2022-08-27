@@ -10,10 +10,10 @@ public class MatchService
     private readonly MatchProvider _matchProvider;
     private readonly SummonerService _summonerService;
 
-    public MatchService(IConfiguration configuration, IHttpClientWrapper http, SummonerService summonerService)
+    public MatchService(MatchRepository matchRepository, MatchProvider matchProvider, SummonerService summonerService)
     {
-        _matchRepository = new MatchRepository(configuration);
-        _matchProvider = new MatchProvider(http);
+        _matchRepository = matchRepository;
+        _matchProvider = matchProvider;
         _summonerService = summonerService;
     }
 
