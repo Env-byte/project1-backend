@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using riot_backend.Api;
+using riot_backend.Api.Modules.Champions;
 using riot_backend.Api.Modules.GoogleAuth;
 using riot_backend.Api.Modules.Items;
 using riot_backend.Api.Modules.Matches;
@@ -39,6 +40,7 @@ builder.Services.AddScoped<TraitService>();
 builder.Services.AddScoped<TeamCompService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<GoogleAuthService>();
+builder.Services.AddScoped<ChampionService>();
 
 //add repository's
 builder.Services.AddScoped<SummonerRepository>();
@@ -51,6 +53,7 @@ builder.Services.AddScoped<SummonerProvider>();
 builder.Services.AddScoped<TraitProvider>();
 builder.Services.AddScoped<MatchProvider>();
 builder.Services.AddScoped<ItemProvider>();
+builder.Services.AddScoped<ChampionProvider>();
 
 
 var app = builder.Build();

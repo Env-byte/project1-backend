@@ -6,24 +6,24 @@ namespace riot_backend.Api.Modules.Champions;
 public class ChampionController : Controller
 {
     private readonly ILogger<ChampionController> _logger;
-    private readonly ChampionLoader _loader;
+    private readonly ChampionService _championService;
 
-    public ChampionController(ILogger<ChampionController> logger)
+    public ChampionController(ILogger<ChampionController> logger, ChampionService championService)
     {
         _logger = logger;
-        _loader = new ChampionLoader();
+        _championService = championService;
     }
 
 
     [HttpGet("")]
     public List<Types.Champion> GetAll()
     {
-        return _loader.GetAll();
+        return _championService.GetAll();
     }
 
     [HttpGet("{championId}")]
     public Types.Champion Get(string championId)
     {
-        return _loader.Get(championId);
+        return _championService.Get(championId);
     }
 }

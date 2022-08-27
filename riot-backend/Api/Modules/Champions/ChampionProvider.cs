@@ -4,11 +4,11 @@ using riot_backend.Api.Modules.Champions.Types;
 
 namespace riot_backend.Api.Modules.Champions;
 
-public class ChampionLoader
+public class ChampionProvider
 {
     private List<Champion> champions { get; }
 
-    public ChampionLoader()
+    public ChampionProvider()
     {
         var path = AppContext.BaseDirectory + "/Cache/traits.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
