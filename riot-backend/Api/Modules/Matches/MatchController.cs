@@ -19,10 +19,10 @@ public class MatchesController : Controller
     [HttpGet("summonerPuuid/{puuid}")]
     public IActionResult GetMatchPuuid(string puuid)
     {
-        return Ok(_matchService.GetMatches(_matchService.GetMatchPuuids(puuid)));
+        return Ok(_matchService.GetMatchPuuids(puuid));
     }
 
-    [HttpGet("match/{puuid}")]
+    [HttpGet("{puuid}")]
     public IActionResult GetMatch(string puuid)
     {
         return Ok(_matchService.GetMatch(puuid));
