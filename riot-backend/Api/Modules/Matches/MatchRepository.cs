@@ -91,4 +91,25 @@ public class MatchRepository
 
         return new Tuple<List<string>, List<Match>>(puuids, matches);
     }
+
+    public List<string> GetMatchPuuids(string summonerPuuid)
+    {
+        using var conn = _databaseFactory.GetDatabase();
+        using var cmd = new NpgsqlCommand();
+        cmd.CommandText =
+            "SELECT match_puuid FROM summoner_matches where summoner_puuid=@puuid;";
+        cmd.Connection = conn;
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summonerPuuid });
+        cmd.Prepare();
+
+        var matchPuuids = new List<string>();
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            matchPuuids.Add(reader.GetString(0));
+        }
+
+        return matchPuuids;
+    }
 }

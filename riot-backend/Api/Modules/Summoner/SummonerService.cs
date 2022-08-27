@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using Npgsql;
-using riot_backend.Api.Modules.Summoner.Types;
 
 namespace riot_backend.Api.Modules.Summoner;
 
@@ -9,28 +7,27 @@ public class SummonerService
     private readonly SummonerRepository _summonerRepository;
     private readonly SummonerProvider _summonerProvider;
 
+
     public SummonerService(SummonerRepository summonerRepository, SummonerProvider summonerProvider)
     {
         _summonerRepository = summonerRepository;
         _summonerProvider = summonerProvider;
     }
 
-    public SummonerResponse GetByName(string name)
+    public Types.Summoner GetByName(string name)
     {
         var summoner = _summonerRepository.GetByName(name);
-        if (summoner == null)
-        {
-            summoner = _summonerProvider.GetByName(name);
-            _summonerRepository.Insert(summoner);
-        }
-
-        return SummonerResponse.Convert(summoner);
+        if (summoner != null) return summoner;
+        
+        summoner = _summonerProvider.GetByName(name);
+        _summonerRepository.Insert(summoner);
+        return summoner;
     }
 
     /**
      * Refresh data using provider. must wait 5 minutes between refreshes
      */
-    public SummonerResponse Refresh(string puuid)
+    public Types.Summoner Refresh(string puuid)
     {
         var summoner = _summonerRepository.GetByPuuid(puuid);
         if (summoner == null)
@@ -53,21 +50,20 @@ public class SummonerService
         summoner.lastUpdate = DateTime.Now;
         _summonerRepository.Update(puuid, summoner);
 
-        return SummonerResponse.Convert(summoner);
+        return summoner;
     }
 
-    public SummonerResponse GetByPuuid(string puuid)
+    public Types.Summoner GetByPuuid(string puuid)
     {
         var summoner = _summonerRepository.GetByPuuid(puuid);
 
-        if (summoner == null)
-        {
-            var providerResponse = _summonerProvider.GetByPuuid(puuid);
-            _summonerRepository.Insert(providerResponse);
-            summoner = providerResponse;
-        }
+        if (summoner != null) return summoner;
+        
+        var providerResponse = _summonerProvider.GetByPuuid(puuid);
+        _summonerRepository.Insert(providerResponse);
+        summoner = providerResponse;
 
-        return SummonerResponse.Convert(summoner);
+        return summoner;
     }
 
     public List<Types.Summoner> GetByPuuid(List<string> puuids)

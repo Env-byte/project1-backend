@@ -17,7 +17,7 @@ public class MatchProvider
         return _http.Get<Types.Match>(url);
     }
 
-    public List<string> GetMatches(string puuid)
+    public List<string> GetMatchPuuids(string puuid)
     {
         var url = Config.TftEndpoints[0, 1] + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid) +
                   "/ids?start=0&count=20";
