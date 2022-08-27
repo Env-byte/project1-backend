@@ -6,24 +6,24 @@ namespace riot_backend.Api.Modules.Traits;
 public class TraitController : Controller
 {
     private readonly ILogger<TraitController> _logger;
-    private readonly TraitLoader _loader;
+    private readonly TraitService _traitService;
 
-    public TraitController(ILogger<TraitController> logger)
+    public TraitController(ILogger<TraitController> logger, TraitService traitService)
     {
         _logger = logger;
-        _loader = new TraitLoader();
+        _traitService = traitService;
     }
 
 
     [HttpGet("")]
     public List<Types.Trait> GetAll()
     {
-        return _loader.GetAll();
+        return _traitService.GetAll();
     }
 
     [HttpGet("{name}")]
     public Types.Trait Get(string name)
     {
-        return _loader.Get(name);
+        return _traitService.Get(name);
     }
 }

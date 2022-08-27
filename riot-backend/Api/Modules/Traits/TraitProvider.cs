@@ -4,11 +4,11 @@ using riot_backend.Api.Modules.Traits.Types;
 
 namespace riot_backend.Api.Modules.Traits;
 
-public class TraitLoader
+public class TraitProvider
 {
     private List<Trait> traits { get; }
 
-    public TraitLoader()
+    public TraitProvider()
     {
         var path = AppContext.BaseDirectory + "/Cache/traits.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
