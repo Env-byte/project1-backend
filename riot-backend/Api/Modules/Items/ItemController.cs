@@ -16,14 +16,14 @@ public class ItemsController : Controller
 
 
     [HttpGet("")]
-    public List<Types.Item> GetAll()
+    public IActionResult GetAll()
     {
-        return _itemService.GetAll();
+        return Ok(_itemService.GetAll());
     }
 
     [HttpGet("{id}")]
-    public Types.Item Get(string key)
+    public IActionResult Get(string id)
     {
-        return _itemService.Get(key);
+        return Ok(_itemService.Get(id));
     }
 }

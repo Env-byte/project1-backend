@@ -16,14 +16,14 @@ public class ChampionController : Controller
 
 
     [HttpGet("")]
-    public List<Types.Champion> GetAll()
+    public IActionResult GetAll()
     {
-        return _championService.GetAll();
+        return Ok(_championService.GetAll());
     }
 
     [HttpGet("{championId}")]
-    public Types.Champion Get(string championId)
+    public IActionResult Get(string championId)
     {
-        return _championService.Get(championId);
+        return Ok(_championService.Get(championId));
     }
 }

@@ -16,14 +16,14 @@ public class TraitController : Controller
 
 
     [HttpGet("")]
-    public List<Types.Trait> GetAll()
+    public IActionResult GetAll()
     {
-        return _traitService.GetAll();
+        return Ok(_traitService.GetAll());
     }
 
     [HttpGet("{name}")]
-    public Types.Trait Get(string name)
+    public IActionResult Get(string name)
     {
-        return _traitService.Get(name);
+        return Ok(_traitService.Get(name));
     }
 }
