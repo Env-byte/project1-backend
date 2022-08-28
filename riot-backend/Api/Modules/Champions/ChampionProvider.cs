@@ -10,7 +10,7 @@ public class ChampionProvider
 
     public ChampionProvider()
     {
-        var path = AppContext.BaseDirectory + "/Cache/traits.json";
+        var path = AppContext.BaseDirectory + "/wwwroot/champions.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
         var contents = streamReader.ReadToEnd();
         champions = JsonConvert.DeserializeObject<List<Champion>>(contents) ??
@@ -25,11 +25,11 @@ public class ChampionProvider
 
     public Champion Get(string championId)
     {
-        var championEnumerable = champions.Where(champion => champion.championId == championId);
-        if (championEnumerable.Count() == 1)
+        foreach (var champion in champions.Where(champion => champion.championId == championId))
         {
-            return championEnumerable.GetEnumerator().Current;
+            return champion;
         }
+
         throw new KeyNotFoundException();
     }
 }

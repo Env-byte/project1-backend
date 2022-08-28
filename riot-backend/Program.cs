@@ -55,9 +55,8 @@ builder.Services.AddScoped<MatchProvider>();
 builder.Services.AddScoped<ItemProvider>();
 builder.Services.AddScoped<ChampionProvider>();
 
-
 var app = builder.Build();
-
+app.UseStaticFiles();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

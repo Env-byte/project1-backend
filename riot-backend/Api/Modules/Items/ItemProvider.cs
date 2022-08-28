@@ -10,7 +10,7 @@ public class ItemProvider
 
     public ItemProvider()
     {
-        var path = AppContext.BaseDirectory + "/Cache/items.json";
+        var path = AppContext.BaseDirectory + "/wwwroot/items.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
         var contents = streamReader.ReadToEnd();
         items = JsonConvert.DeserializeObject<List<Item>>(contents) ??

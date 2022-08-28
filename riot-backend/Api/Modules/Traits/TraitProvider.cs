@@ -10,7 +10,7 @@ public class TraitProvider
 
     public TraitProvider()
     {
-        var path = AppContext.BaseDirectory + "/Cache/traits.json";
+        var path = AppContext.BaseDirectory + "/wwwroot/traits.json";
         using var streamReader = new StreamReader(path, Encoding.UTF8);
         var contents = streamReader.ReadToEnd();
         traits = JsonConvert.DeserializeObject<List<Trait>>(contents) ??
