@@ -54,11 +54,11 @@
       <None Include="wwwroot\champions\tft7_leona.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_lillia.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_lulu.tft_set7.png" />
-      <None Include="wwwroot\champions\tft7_miragedragon.tft_set7.png" />
+      <None Include="wwwroot\champions\tft7_DragonBlue.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_nami.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_neeko.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_nidalee.tft_set7.png" />
-      <None Include="wwwroot\champions\tft7_nomsy.tft_set7.png" />
+      <None Include="wwwroot\champions\tft7_TrainerDragon.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_nunu.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_olaf.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_orbs.tft_set7.png" />
@@ -70,7 +70,7 @@
       <None Include="wwwroot\champions\tft7_senna.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_sett.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_shen.tft_set7.png" />
-      <None Include="wwwroot\champions\tft7_shimmerscaledragon.tft_set7.png" />
+      <None Include="wwwroot\champions\tft7_DragonGold.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_shyvana.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_shyvanadragon.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_skarner.tft_set7.png" />
@@ -89,7 +89,7 @@
       <None Include="wwwroot\champions\tft7_varus.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_vladimir.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_volibear.tft_set7.png" />
-      <None Include="wwwroot\champions\tft7_whispersdragon.tft_set7.png" />
+      <None Include="wwwroot\champions\tft7_DragonPurple.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_xayah.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_yasuo.tft_set7.png" />
       <None Include="wwwroot\champions\tft7_yone.tft_set7.png" />
