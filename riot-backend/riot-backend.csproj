@@ -116,7 +116,7 @@
       <None Include="wwwroot\items\edge_of_night.png" />
       <None Include="wwwroot\items\evoker.tft_set7.png" />
       <None Include="wwwroot\items\frozen_heart.png" />
-      <None Include="wwwroot\items\gaints_belt.png" />
+      <None Include="wwwroot\items\giants_belt.png" />
       <None Include="wwwroot\items\gargoyle_stoneplate.png" />
       <None Include="wwwroot\items\giant_slayer.png" />
       <None Include="wwwroot\items\guardian.tft_set7.png" />
