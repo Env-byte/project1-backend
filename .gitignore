@@ -7,3 +7,4 @@ riot-backend-tests/appsettings.Test.json
 riot-backend/appsettings.json
 riot-backend/appsettings.json
 riot-backend/appsettings.Development.json
+*.json
