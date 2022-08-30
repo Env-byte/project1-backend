@@ -16,9 +16,11 @@ public class SummonerService
 
     public Types.Summoner GetByName(string name)
     {
+        name = name.Replace(" ", "");
+
         var summoner = _summonerRepository.GetByName(name);
         if (summoner != null) return summoner;
-        
+
         summoner = _summonerProvider.GetByName(name);
         _summonerRepository.Insert(summoner);
         return summoner;
@@ -58,7 +60,7 @@ public class SummonerService
         var summoner = _summonerRepository.GetByPuuid(puuid);
 
         if (summoner != null) return summoner;
-        
+
         var providerResponse = _summonerProvider.GetByPuuid(puuid);
         _summonerRepository.Insert(providerResponse);
         summoner = providerResponse;

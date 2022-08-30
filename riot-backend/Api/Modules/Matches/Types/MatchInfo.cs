@@ -39,7 +39,20 @@ public class MatchInfo
      */
     [JsonProperty("tft_set_number")]
     public int tftSetNumber { get; set; }
+    
+    /**
+     * Teamfight Tactics game type.
+     */
+    [JsonProperty("tft_game_type")]
+    public string tftGameType { get; set; }
 
+    /**
+     * Set core name.
+     */
+    [JsonProperty("tft_set_core_name")]
+
+    public string tftSetCoreName { get; set; }
+    
     /**
      * Game participants
      */

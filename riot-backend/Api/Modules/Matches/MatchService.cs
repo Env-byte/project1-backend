@@ -23,11 +23,7 @@ public class MatchService
         var newMatch = matchesNotFound.Select(puuid => _matchProvider.GetMatch(puuid)).ToList();
         _matchRepository.Insert(newMatch);
         matches = matches.Concat(newMatch).ToList();
-        foreach (var match in matches)
-        {
-            match.metadata.summoners = _summonerService.GetByPuuid(match.metadata.participants);
-        }
-
+        
         return matches;
     }
 
