@@ -40,7 +40,7 @@ public class MatchRepository
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = match.metadata.matchId });
             cmd.Parameters.Add(new NpgsqlParameter
             {
-                ParameterName = "data", Value = json, NpgsqlDbType = NpgsqlDbType.Jsonb
+                ParameterName = "data", Value = json, NpgsqlDbType = NpgsqlDbType.Text
             });
             cmd.Prepare();
             cmd.ExecuteNonQuery();
@@ -76,7 +76,6 @@ public class MatchRepository
         cmd.Parameters.AddWithValue("puuid", NpgsqlDbType.Text | NpgsqlDbType.Array, puuids.ToArray());
         cmd.Prepare();
         using var reader = cmd.ExecuteReader();
-
         while (reader.Read())
         {
             var match = JsonConvert.DeserializeObject<Match>(reader.GetString(1));
@@ -84,10 +83,6 @@ public class MatchRepository
             matches.Add(match);
             puuids.Remove(match.metadata.matchId);
         }
-
-        Console.WriteLine("matches length: " + matches.Count);
-        Console.WriteLine("puuids length: " + puuids.Count);
-
 
         return new Tuple<List<string>, List<Match>>(puuids, matches);
     }

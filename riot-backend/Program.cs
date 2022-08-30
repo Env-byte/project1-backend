@@ -3,6 +3,7 @@ using riot_backend.Api;
 using riot_backend.Api.Modules.Champions;
 using riot_backend.Api.Modules.GoogleAuth;
 using riot_backend.Api.Modules.Items;
+using riot_backend.Api.Modules.Leagues;
 using riot_backend.Api.Modules.Matches;
 using riot_backend.Api.Modules.Summoner;
 using riot_backend.Api.Modules.TeamComps;
@@ -41,12 +42,14 @@ builder.Services.AddScoped<TeamCompService>();
 builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddScoped<ChampionService>();
+builder.Services.AddScoped<LeagueService>();
 
 //add repository's
 builder.Services.AddScoped<SummonerRepository>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<MatchRepository>();
 builder.Services.AddScoped<TeamCompRepository>();
+builder.Services.AddScoped<LeagueRepository>();
 
 //add providers
 builder.Services.AddScoped<SummonerProvider>();
@@ -54,6 +57,7 @@ builder.Services.AddScoped<TraitProvider>();
 builder.Services.AddScoped<MatchProvider>();
 builder.Services.AddScoped<ItemProvider>();
 builder.Services.AddScoped<ChampionProvider>();
+builder.Services.AddScoped<LeagueProvider>();
 
 var app = builder.Build();
 app.UseStaticFiles(new StaticFileOptions

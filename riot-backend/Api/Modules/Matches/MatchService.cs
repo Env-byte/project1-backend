@@ -20,8 +20,6 @@ public class MatchService
     public List<Match> GetMatches(List<string> matchPuuid)
     {
         var (matchesNotFound, matches) = _matchRepository.GetMatches(matchPuuid);
-        Console.WriteLine(matchesNotFound.ToString());
-
         var newMatch = matchesNotFound.Select(puuid => _matchProvider.GetMatch(puuid)).ToList();
         _matchRepository.Insert(newMatch);
         matches = matches.Concat(newMatch).ToList();

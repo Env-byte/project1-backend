@@ -61,3 +61,10 @@ CREATE table if not exists summoner_matches
     match_puuid    varchar(78)
 );
 create unique index on summoner_matches (summoner_puuid, match_puuid);
+
+CREATE TABLE if not exists summoner_league
+(
+    summoner_id varchar(78),
+    data        text
+);
+create unique index on summoner_league (summoner_id);
