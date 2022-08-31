@@ -1,8 +1,6 @@
-using System.Data;
 using Newtonsoft.Json;
 using Npgsql;
 using NpgsqlTypes;
-using riot_backend.helpers;
 using Match = riot_backend.Api.Modules.Matches.Types.Match;
 
 namespace riot_backend.Api.Modules.Matches;
@@ -44,19 +42,6 @@ public class MatchRepository
             });
             cmd.Prepare();
             cmd.ExecuteNonQuery();
-            foreach (var participant in match.metadata.participants)
-            {
-                using var cmd2 = new NpgsqlCommand();
-                cmd2.CommandText =
-                    "INSERT INTO summoner_matches (match_puuid,summoner_puuid) values (@match_puuid,@summoner_puuid);";
-                cmd2.Connection = conn;
-                cmd2.Parameters.Add(
-                    new NpgsqlParameter { ParameterName = "match_puuid", Value = match.metadata.matchId });
-                cmd2.Parameters.Add(new NpgsqlParameter
-                    { ParameterName = "summoner_puuid", Value = participant });
-                cmd2.Prepare();
-                cmd2.ExecuteNonQuery();
-            }
         }
 
         transaction.Commit();
@@ -106,5 +91,42 @@ public class MatchRepository
         }
 
         return matchPuuids;
+    }
+
+
+    public void Remove(string summonerPuuid)
+    {
+        using var conn = _databaseFactory.GetDatabase();
+        using (var cmd = new NpgsqlCommand("DELETE FROM summoner_matches where summoner_puuid=@puuid;", conn))
+        {
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summonerPuuid });
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+        }
+
+        using (var cmd = new NpgsqlCommand(
+                   "DELETE FROM match where puuid not in (SELECT match_puuid FROM summoner_matches );", conn))
+        {
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summonerPuuid });
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    public void InsertMatchPuuids(string summonerPuuid, List<string> matchPuuids)
+    {
+        using var conn = _databaseFactory.GetDatabase();
+        foreach (var match in matchPuuids)
+        {
+            using var cmd = new NpgsqlCommand();
+            cmd.CommandText =
+                "INSERT INTO summoner_matches (match_puuid,summoner_puuid) values (@match_puuid,@summoner_puuid);";
+            cmd.Connection = conn;
+            cmd.Parameters.Add(
+                new NpgsqlParameter { ParameterName = "match_puuid", Value = match });
+            cmd.Parameters.Add(new NpgsqlParameter
+                { ParameterName = "summoner_puuid", Value = summonerPuuid });
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+        }
     }
 }

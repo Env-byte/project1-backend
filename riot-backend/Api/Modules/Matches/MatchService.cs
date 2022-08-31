@@ -23,17 +23,18 @@ public class MatchService
         var newMatch = matchesNotFound.Select(puuid => _matchProvider.GetMatch(puuid)).ToList();
         _matchRepository.Insert(newMatch);
         matches = matches.Concat(newMatch).ToList();
-        
+
         return matches;
     }
 
     public List<string> GetMatchPuuids(string summonerPuuid)
     {
         var matchPuuids = _matchRepository.GetMatchPuuids(summonerPuuid);
-        if (matchPuuids.Count == 0)
-        {
-            matchPuuids = _matchProvider.GetMatchPuuids(summonerPuuid);
-        }
+        if (matchPuuids.Count != 0) return matchPuuids;
+        
+        matchPuuids = _matchProvider.GetMatchPuuids(summonerPuuid);
+        _matchRepository.InsertMatchPuuids(summonerPuuid, matchPuuids);
+
         return matchPuuids;
     }
 

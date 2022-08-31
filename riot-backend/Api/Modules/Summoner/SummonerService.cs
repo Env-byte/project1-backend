@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using riot_backend.Api.Modules.Matches;
 
 namespace riot_backend.Api.Modules.Summoner;
 
@@ -6,12 +7,15 @@ public class SummonerService
 {
     private readonly SummonerRepository _summonerRepository;
     private readonly SummonerProvider _summonerProvider;
+    private readonly MatchRepository _matchRepository;
 
 
-    public SummonerService(SummonerRepository summonerRepository, SummonerProvider summonerProvider)
+    public SummonerService(SummonerRepository summonerRepository, SummonerProvider summonerProvider,
+        MatchRepository matchRepository)
     {
         _summonerRepository = summonerRepository;
         _summonerProvider = summonerProvider;
+        _matchRepository = matchRepository;
     }
 
     public Types.Summoner GetByName(string name)
@@ -40,17 +44,20 @@ public class SummonerService
         //12:30 last update 12:35
         // 12:32 now 
         var nextUpdate = summoner.lastUpdate.AddMinutes(5);
+        Console.WriteLine(nextUpdate.ToString());
+        Console.WriteLine(DateTime.Now.ToString());
         if (nextUpdate > DateTime.Now)
         {
             var ts = nextUpdate - DateTime.Now;
 
             throw new WarningException(
-                "Please wait " + ts.TotalSeconds + " second(s) before trying to refresh this summoner again.");
+                "Please wait "  + String.Format("{0:N0}", ts.TotalSeconds ) + " second(s) before trying to refresh this summoner again.");
         }
 
         summoner = _summonerProvider.GetByPuuid(puuid);
         summoner.lastUpdate = DateTime.Now;
         _summonerRepository.Update(puuid, summoner);
+        _matchRepository.Remove(summoner.puuid);
 
         return summoner;
     }

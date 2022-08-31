@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace riot_backend.Api.Modules.Summoner;
 
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +31,13 @@ public class SummonerController : Controller
     [HttpGet("{puuid}/refresh")]
     public IActionResult Refresh(string puuid)
     {
-        return Ok(_service.Refresh(puuid));
+        try
+        {
+            return Ok(_service.Refresh(puuid));
+        }
+        catch (WarningException e)
+        {
+            return BadRequest(new ErrorWrapper(e.Message, 101));
+        }
     }
 }

@@ -73,7 +73,7 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                "UPDATE summoners SET name=:name, profile_icon_id=:profile_icon_id, revision_date=:revision_date, summoner_level=:summoner_level,last_update=:last_update FROM summoners WHERE puuid= @puuid",
+                "UPDATE summoners SET name=:name, profile_icon_id=:profile_icon_id, revision_date=:revision_date, summoner_level=:summoner_level,last_update=:last_update WHERE puuid= @puuid",
                 conn);
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = puuid });
         cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = summoner.name });

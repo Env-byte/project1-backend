@@ -68,6 +68,7 @@ public class Summoner : BaseSuccessResponse
             profileIconId = reader.GetInt32(4),
             revisionDate = reader.GetInt64(5),
             summonerLevel = reader.GetInt64(6),
+            lastUpdate = reader.GetDateTime(7)
         };
     }
 }
