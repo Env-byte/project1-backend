@@ -14,7 +14,7 @@ public class TraitController : Controller
         _traitService = traitService;
     }
 
-
+/*
     [HttpGet("")]
     public IActionResult GetAll()
     {
@@ -25,5 +25,5 @@ public class TraitController : Controller
     public IActionResult Get(string name)
     {
         return Ok(_traitService.Get(name));
-    }
+    }*/
 }

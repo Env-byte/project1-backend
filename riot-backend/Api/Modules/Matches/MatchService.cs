@@ -37,15 +37,7 @@ public class MatchService
 
         return matchPuuids;
     }
-
-    public List<Match> GetMatchesByName(string summonerName)
-    {
-        var summoner = _summonerService.GetByName(summonerName);
-        var matchIds = GetMatchPuuids(summoner.puuid);
-        var matches = GetMatches(matchIds);
-        return matches;
-    }
-
+    
     public Match GetMatch(string matchPuuid)
     {
         return GetMatches(new List<string> { matchPuuid })[0];

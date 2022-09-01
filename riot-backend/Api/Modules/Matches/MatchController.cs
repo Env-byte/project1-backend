@@ -27,10 +27,4 @@ public class MatchesController : Controller
     {
         return Ok(_matchService.GetMatch(puuid));
     }
-
-    [HttpGet("summonerName/{name}")]
-    public IActionResult GetMatchesByName(string name)
-    {
-        return Ok(_matchService.GetMatchesByName(name));
-    }
 }

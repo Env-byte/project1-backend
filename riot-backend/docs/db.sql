@@ -4,12 +4,13 @@ SET search_path TO public, extensions;
 /**SET search_path TO test, extensions;**/
 CREATE TABLE if not exists users
 (
-    id         SERIAL PRIMARY KEY,
-    first_name VARCHAR(100)            NOT NULL,
-    last_name  VARCHAR(100)            NOT NULL,
-    email      extensions.citext       NOT NULL,
-    type       extensions.login_method NOT NULL,
-    token      text
+    id           SERIAL PRIMARY KEY,
+    first_name   VARCHAR(100)            NOT NULL,
+    last_name    VARCHAR(100)            NOT NULL,
+    email        extensions.citext       NOT NULL,
+    api_type     extensions.login_method NOT NULL,
+    api_token    text,
+    access_token text
 );
 CREATE INDEX ON users ((lower(email)));
 
