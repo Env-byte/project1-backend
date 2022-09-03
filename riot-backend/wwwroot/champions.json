@@ -1,23 +1,5 @@
 [
     {
-        "name": "Voidspawn",
-        "championId": "TFT_VoidSpawn",
-        "cost": 1,
-        "traits": []
-    },
-    {
-        "name": "Target Dummy",
-        "championId": "TFT_TrainingDummy",
-        "cost": 1,
-        "traits": []
-    },
-    {
-        "name": "Tome of Traits",
-        "championId": "TFT5_EmblemArmoryKey",
-        "cost": 7,
-        "traits": []
-    },
-    {
         "name": "Vladimir",
         "championId": "TFT7_Vladimir",
         "cost": 1,
@@ -392,12 +374,6 @@
         ]
     },
     {
-        "name": "Zoe's Daisy",
-        "championId": "TFT7_IvernMinion",
-        "cost": 10,
-        "traits": []
-    },
-    {
         "name": "Jinx",
         "championId": "TFT7_Jinx",
         "cost": 2,
@@ -479,12 +455,6 @@
             "Guild",
             "Swiftshot"
         ]
-    },
-    {
-        "name": "The Golden Egg",
-        "championId": "TFT6_TheGoldenEgg",
-        "cost": 7,
-        "traits": []
     },
     {
         "name": "Ao Shin",
