@@ -20,7 +20,10 @@ public class LeagueService
         if (leagues.Count != 0) return leagues;
 
         leagues = _leagueProvider.GetSummonerLeague(summonerId);
-        _leagueRepository.Insert(leagues);
+        if (leagues.Count > 0)
+        {
+            _leagueRepository.Insert(leagues);
+        }
 
         return leagues;
     }
