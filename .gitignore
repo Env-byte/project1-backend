@@ -5,6 +5,5 @@ riderModule.iml
 /_ReSharper.Caches/
 riot-backend-tests/appsettings.Test.json
 riot-backend/appsettings.json
-riot-backend/appsettings.json
 riot-backend/appsettings.Development.json
-*.json
+riot-backend/Api/Modules/GoogleAuth/client_secret.json
