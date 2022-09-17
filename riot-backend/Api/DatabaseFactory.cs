@@ -15,8 +15,9 @@ public class DatabaseFactory
 
     public NpgsqlConnection GetDatabase()
     {
+     
         NpgsqlConnection.GlobalTypeMapper.MapEnum<ELoginType>("extensions.login_method");
-
+        Console.WriteLine("db_connection: " + _configuration.GetConnectionString("database"));
         var conn = new NpgsqlConnection(_configuration.GetConnectionString("database"));
         conn.Open();
         return conn;

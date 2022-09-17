@@ -1,7 +1,7 @@
 create schema if not exists public;
 
 SET search_path TO public, extensions;
-/**SET search_path TO test, extensions;**/
+
 CREATE TABLE if not exists users
 (
     id           SERIAL PRIMARY KEY,

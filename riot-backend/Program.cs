@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.HttpOverrides;
 using riot_backend.Api;
 using riot_backend.Api.Modules.Champions;
 using riot_backend.Api.Modules.GoogleAuth;
@@ -63,6 +64,7 @@ builder.Services.AddScoped<ChampionProvider>();
 builder.Services.AddScoped<LeagueProvider>();
 
 var app = builder.Build();
+
 app.UseStaticFiles(new StaticFileOptions
 {
     OnPrepareResponse = ctx =>
@@ -72,14 +74,18 @@ app.UseStaticFiles(new StaticFileOptions
             "Origin, X-Requested-With, Content-Type, Accept");
     }
 });
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+//app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseRegionHandler();
 app.MapControllers();
