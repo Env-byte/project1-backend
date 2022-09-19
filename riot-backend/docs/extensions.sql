@@ -14,3 +14,4 @@ alter default privileges in schema extensions
 CREATE EXTENSION if not exists citext schema extensions;
 Set search_path to extensions;
 CREATE TYPE login_method AS ENUM ('google','none');
+CREATE TYPE regions AS ENUM ('EUW1','NA1','EUN1');

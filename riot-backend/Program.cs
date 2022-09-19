@@ -11,7 +11,7 @@ using riot_backend.Api.Modules.TeamComps;
 using riot_backend.Api.Modules.Traits;
 using riot_backend.Api.Modules.Users;
 using riot_backend.Middleware;
-using riot_backend.Services;
+using riot_backend.ScopedTypes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,7 +46,8 @@ builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddScoped<ChampionService>();
 builder.Services.AddScoped<LeagueService>();
-builder.Services.AddScoped<RegionService>();
+
+builder.Services.AddScoped<Region>();
 
 //add repository's
 builder.Services.AddScoped<SummonerRepository>();

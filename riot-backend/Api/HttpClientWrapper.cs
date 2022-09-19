@@ -30,6 +30,8 @@ public class HttpClientWrapper : IHttpClientWrapper
 
     public T Get<T>(string url)
     {
+        Console.WriteLine("HttpClientWrapper url: " + url);
+
         var response = _ExecGet(url).Result;
         var result = JsonConvert.DeserializeObject<T>(response) ??
                      throw new InvalidOperationException("Could not decode response");

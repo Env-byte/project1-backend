@@ -40,16 +40,17 @@ CREATE TABLE if not exists summoners
     profile_icon_id int          not null,
     revision_date   bigint       not null,
     summoner_level  bigint       not null,
-    last_update     timestamp default now()
+    last_update     timestamp default now(),
+    region          varchar(5)   NOT NULL
 );
 create unique index on summoners (puuid);
 
 
 CREATE TABLE if not exists match
 (
-    puuid varchar(78),
-    data  text
-);
+    puuid           varchar(78),
+    data            text
+    );
 create unique index on match (puuid);
 
 /**

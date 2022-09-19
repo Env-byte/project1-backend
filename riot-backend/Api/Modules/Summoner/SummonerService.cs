@@ -9,9 +9,11 @@ public class SummonerService
     private readonly SummonerProvider _summonerProvider;
     private readonly MatchRepository _matchRepository;
 
-
-    public SummonerService(SummonerRepository summonerRepository, SummonerProvider summonerProvider,
-        MatchRepository matchRepository)
+    public SummonerService(
+        SummonerRepository summonerRepository,
+        SummonerProvider summonerProvider,
+        MatchRepository matchRepository
+    )
     {
         _summonerRepository = summonerRepository;
         _summonerProvider = summonerProvider;
@@ -51,7 +53,8 @@ public class SummonerService
             var ts = nextUpdate - DateTime.Now;
 
             throw new WarningException(
-                "Please wait "  + String.Format("{0:N0}", ts.TotalSeconds ) + " second(s) before trying to refresh this summoner again.");
+                "Please wait " + String.Format("{0:N0}", ts.TotalSeconds) +
+                " second(s) before trying to refresh this summoner again.");
         }
 
         summoner = _summonerProvider.GetByPuuid(puuid);

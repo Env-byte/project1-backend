@@ -1,15 +1,18 @@
 using Npgsql;
 using NpgsqlTypes;
+using riot_backend.ScopedTypes;
 
 namespace riot_backend.Api.Modules.Summoner;
 
 public class SummonerRepository
 {
     private readonly DatabaseFactory _databaseFactory;
+    private readonly Region _region;
 
-    public SummonerRepository(DatabaseFactory databaseFactory)
+    public SummonerRepository(DatabaseFactory databaseFactory, Region region)
     {
         _databaseFactory = databaseFactory;
+        _region = region;
     }
 
     public Types.Summoner? Get(string id)
@@ -19,7 +22,7 @@ public class SummonerRepository
             new NpgsqlCommand(
                 $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE id= @id",
                 conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "id", Value = id});
         cmd.Prepare();
 
         using var reader = cmd.ExecuteReader();
@@ -35,9 +38,10 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE lower(replace(name,' ',''))= lower(@name)",
+                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE lower(replace(name,' ',''))= lower(@name) AND region=@region",
                 conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = name });
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "name", Value = name});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
         cmd.Prepare();
 
         using var reader = cmd.ExecuteReader();
@@ -52,9 +56,10 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid=@puuid",
+                "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid=@puuid  AND region=@region",
                 conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = puuid });
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "puuid", Value = puuid});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
         cmd.Prepare();
         using var reader = cmd.ExecuteReader();
 
@@ -73,14 +78,15 @@ public class SummonerRepository
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                "UPDATE summoners SET name=:name, profile_icon_id=:profile_icon_id, revision_date=:revision_date, summoner_level=:summoner_level,last_update=:last_update WHERE puuid= @puuid",
+                "UPDATE summoners SET name=:name, profile_icon_id=:profile_icon_id, revision_date=:revision_date, summoner_level=:summoner_level,last_update=:last_update WHERE puuid= @puuid AND  AND region=@region",
                 conn);
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = puuid });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = summoner.name });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "profile_icon_id", Value = summoner.profileIconId });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "revision_date", Value = summoner.revisionDate });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "summoner_level", Value = summoner.summonerLevel });
-        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "last_update", Value = summoner.lastUpdate });
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "puuid", Value = puuid});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "name", Value = summoner.name});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "profile_icon_id", Value = summoner.profileIconId});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "revision_date", Value = summoner.revisionDate});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "summoner_level", Value = summoner.summonerLevel});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "last_update", Value = summoner.lastUpdate});
         cmd.Prepare();
         cmd.ExecuteNonQuery();
     }
@@ -89,13 +95,14 @@ public class SummonerRepository
     {
         var summoners = new List<Types.Summoner>();
 
-
         using var conn = _databaseFactory.GetDatabase();
         using var cmd =
             new NpgsqlCommand(
-                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid =any(:puuid)",
+                $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid =any(:puuid) AND region= :region",
                 conn);
         cmd.Parameters.AddWithValue("puuid", NpgsqlDbType.Text | NpgsqlDbType.Array, puuids.ToArray());
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+
         cmd.Prepare();
         using var reader = cmd.ExecuteReader();
 
@@ -117,17 +124,19 @@ public class SummonerRepository
         {
             using var cmd = new NpgsqlCommand();
             cmd.CommandText =
-                "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level);";
+                "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,region) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level,@region);";
             cmd.Connection = conn;
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = summoner.id });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "account_id", Value = summoner.accountId });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "puuid", Value = summoner.puuid });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = summoner.name });
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "id", Value = summoner.id});
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "account_id", Value = summoner.accountId});
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "puuid", Value = summoner.puuid});
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "name", Value = summoner.name});
             cmd.Parameters.Add(
-                new NpgsqlParameter { ParameterName = "profile_icon_id", Value = summoner.profileIconId });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "revision_date", Value = summoner.revisionDate });
+                new NpgsqlParameter {ParameterName = "profile_icon_id", Value = summoner.profileIconId});
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "revision_date", Value = summoner.revisionDate});
             cmd.Parameters.Add(new NpgsqlParameter
-                { ParameterName = "summoner_level", Value = summoner.summonerLevel });
+                {ParameterName = "summoner_level", Value = summoner.summonerLevel});
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+
             cmd.Prepare();
             cmd.ExecuteNonQuery();
         }
@@ -138,6 +147,6 @@ public class SummonerRepository
 
     public void Insert(Types.Summoner summoner)
     {
-        Insert(new List<Types.Summoner> { summoner });
+        Insert(new List<Types.Summoner> {summoner});
     }
 }
