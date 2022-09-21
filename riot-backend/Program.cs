@@ -14,7 +14,11 @@ using riot_backend.Middleware;
 using riot_backend.ScopedTypes;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+configuration.AddJsonFile($"appsettings.{env}.json", true, true);
 //allow dapper to match database columns
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -80,5 +84,6 @@ app.UseAuthorization();
 app.UseRegionHandler();
 app.MapControllers();
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
-
+Console.WriteLine(configuration.GetConnectionString("database"));
 app.Run();
+
