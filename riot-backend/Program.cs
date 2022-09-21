@@ -95,6 +95,6 @@ app.UseAuthorization();
 app.UseRegionHandler();
 app.MapControllers();
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
-Console.WriteLine(configuration.GetConnectionString("database"));
+Console.WriteLine("database: "+configuration.GetConnectionString("database"));
 app.Run();
 
