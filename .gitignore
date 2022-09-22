@@ -9,3 +9,4 @@ riot-backend/appsettings.json
 riot-backend/Api/Modules/GoogleAuth/client_secret.json
 .vs/
 riot-backend/appsettings.Production.json
+riot-backend/.DS_Store
