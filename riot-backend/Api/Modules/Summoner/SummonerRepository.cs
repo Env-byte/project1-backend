@@ -124,7 +124,7 @@ public class SummonerRepository
         {
             using var cmd = new NpgsqlCommand();
             cmd.CommandText =
-                "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,region) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level,@region);";
+                "INSERT INTO summoners (id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,region) values (@id,@account_id,@puuid,@name,@profile_icon_id,@revision_date,@summoner_level,@region) ON CONFLICT DO NOTHING;";
             cmd.Connection = conn;
             cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "id", Value = summoner.id});
             cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "account_id", Value = summoner.accountId});

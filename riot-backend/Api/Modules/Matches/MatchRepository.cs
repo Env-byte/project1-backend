@@ -33,7 +33,7 @@ public class MatchRepository
             var json = JsonConvert.SerializeObject(match);
             using var cmd = new NpgsqlCommand();
             cmd.CommandText =
-                "INSERT INTO match (puuid,data) values (@puuid,@data);";
+                "INSERT INTO match (puuid,data) values (@puuid,@data) ON CONFLICT DO NOTHING;";
             cmd.Connection = conn;
             cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "puuid", Value = match.metadata.matchId});
 
@@ -121,7 +121,7 @@ public class MatchRepository
         {
             using var cmd = new NpgsqlCommand();
             cmd.CommandText =
-                "INSERT INTO summoner_matches (match_puuid,summoner_puuid) values (@match_puuid,@summoner_puuid);";
+                "INSERT INTO summoner_matches (match_puuid,summoner_puuid) values (@match_puuid,@summoner_puuid) ON CONFLICT DO NOTHING;";
             cmd.Connection = conn;
             cmd.Parameters.Add(
                 new NpgsqlParameter {ParameterName = "match_puuid", Value = match});
