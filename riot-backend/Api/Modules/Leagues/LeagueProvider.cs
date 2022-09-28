@@ -6,11 +6,11 @@ namespace riot_backend.Api.Modules.Leagues;
 public class LeagueProvider
 {
     private readonly IHttpClientWrapper _http;
-    private readonly Region _region;
+    private readonly Header _region;
 
     private const string Endpoint = "/tft/league/v1";
 
-    public LeagueProvider(IHttpClientWrapper http, Region region)
+    public LeagueProvider(IHttpClientWrapper http, Header region)
     {
         _http = http;
         _region = region;

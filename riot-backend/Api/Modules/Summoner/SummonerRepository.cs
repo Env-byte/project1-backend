@@ -7,9 +7,9 @@ namespace riot_backend.Api.Modules.Summoner;
 public class SummonerRepository
 {
     private readonly DatabaseFactory _databaseFactory;
-    private readonly Region _region;
+    private readonly Header _region;
 
-    public SummonerRepository(DatabaseFactory databaseFactory, Region region)
+    public SummonerRepository(DatabaseFactory databaseFactory, Header region)
     {
         _databaseFactory = databaseFactory;
         _region = region;

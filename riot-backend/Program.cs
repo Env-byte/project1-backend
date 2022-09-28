@@ -51,7 +51,7 @@ builder.Services.AddScoped<GoogleAuthService>();
 builder.Services.AddScoped<ChampionService>();
 builder.Services.AddScoped<LeagueService>();
 
-builder.Services.AddScoped<Region>();
+builder.Services.AddScoped<Header>();
 
 //add repository's
 builder.Services.AddScoped<SummonerRepository>();
@@ -92,7 +92,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 //app.UseHttpsRedirection();
 app.UseAuthorization();
-app.UseRegionHandler();
+app.UseHeaderHandler();
 app.MapControllers();
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
 Console.WriteLine("database: "+configuration.GetConnectionString("database"));

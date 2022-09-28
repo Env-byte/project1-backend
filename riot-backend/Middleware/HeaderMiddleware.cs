@@ -3,16 +3,16 @@ using riot_backend.ScopedTypes;
 
 namespace riot_backend.Middleware;
 
-public class RegionHandlerMiddleware
+public class HeaderMiddleware
 {
     private readonly RequestDelegate _next;
 
-    public RegionHandlerMiddleware(RequestDelegate next)
+    public HeaderMiddleware(RequestDelegate next)
     {
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context, Region region)
+    public async Task Invoke(HttpContext context, Header region)
     {
         var regionStr = context.Request.Headers["region"].ToString();
         
@@ -31,11 +31,11 @@ public class RegionHandlerMiddleware
     }
 }
 
-public static class RegionHandlerMiddlewareExtensions
+public static class HeaderMiddlewareExtensions
 {
-    public static IApplicationBuilder UseRegionHandler(
+    public static IApplicationBuilder UseHeaderHandler(
         this IApplicationBuilder builder)
     {
-        return builder.UseMiddleware<RegionHandlerMiddleware>();
+        return builder.UseMiddleware<HeaderMiddleware>();
     }
 }

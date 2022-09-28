@@ -2,7 +2,7 @@ using riot_backend.Api;
 
 namespace riot_backend.ScopedTypes;
 
-public class Region
+public class Header
 {
     public string platformRoute { get; set; }
     public string regionalRoute { get; set; }

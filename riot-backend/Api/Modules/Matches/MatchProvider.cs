@@ -5,11 +5,11 @@ namespace riot_backend.Api.Modules.Matches;
 public class MatchProvider
 {
     private readonly IHttpClientWrapper _http;
-    private readonly Region _region;
+    private readonly Header _region;
 
     private const string Endpoint = "/tft/match/v1/matches";
 
-    public MatchProvider(IHttpClientWrapper http, Region region)
+    public MatchProvider(IHttpClientWrapper http, Header region)
     {
         _http = http;
         _region = region;
