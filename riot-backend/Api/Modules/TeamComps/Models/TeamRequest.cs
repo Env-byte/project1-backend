@@ -13,6 +13,8 @@ public class TeamRequest
     public string SetId { get; set; }
     [JsonProperty("isPublic")]
     public bool IsPublic { get; set; }
+    [JsonProperty("guuid")]
+    public string Guuid { get; set; }
 }
 
 

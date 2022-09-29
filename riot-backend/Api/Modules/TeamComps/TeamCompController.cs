@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using riot_backend.Api.Modules.TeamComps.Models;
 
@@ -24,12 +25,15 @@ public class TeamCompsController : Controller
         {
             throw new ArgumentNullException(nameof(teamRequest));
         }
-        return Ok(teamRequest);
+
+        teamRequest.Guuid = _service.Save(id, teamRequest);
+
+        return Ok();
     }
 
     [HttpPost("team/create")]
     public IActionResult Create([FromBody] TeamRequest teamRequest)
     {
-        return Ok(teamRequest);
+        return Ok(_service.Create(teamRequest));
     }
 }
