@@ -16,13 +16,13 @@ public class SummonerProvider
 
     public Types.Summoner GetByName(string name)
     {
-        var url = _header.platformRoute + Endpoint + "/by-name/" + Uri.EscapeDataString(name);
+        var url = _header.PlatformRoute + Endpoint + "/by-name/" + Uri.EscapeDataString(name);
         return _http.Get<Types.Summoner>(url);
     }
 
     public Types.Summoner GetByPuuid(string puuid)
     {
-        var url = _header.platformRoute + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid);
+        var url = _header.PlatformRoute + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid);
         return _http.Get<Types.Summoner>(url);
     }
 }

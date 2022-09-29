@@ -18,7 +18,7 @@ public class LeagueProvider
 
     public List<Types.League> GetSummonerLeague(string summonerId)
     {
-        var url = _region.platformRoute + Endpoint + "/entries/by-summoner/" + Uri.EscapeDataString(summonerId);
+        var url = _region.PlatformRoute + Endpoint + "/entries/by-summoner/" + Uri.EscapeDataString(summonerId);
         return _http.Get<List<Types.League>>(url);
     }
 }

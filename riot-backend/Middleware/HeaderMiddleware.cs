@@ -12,20 +12,23 @@ public class HeaderMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context, Header region)
+    public async Task Invoke(HttpContext context, Header header)
     {
-        var regionStr = context.Request.Headers["region"].ToString();
+        var region = context.Request.Headers["region"].ToString();
         
-        if (string.IsNullOrEmpty(regionStr))
+        if (string.IsNullOrEmpty(region))
         {
             //default to euw1
-            regionStr = "EUW1";
+            region = "EUW1";
         }
 
-        Console.WriteLine("RegionHandlerMiddleware region: " +regionStr);
-        region.region = regionStr;
-        region.platformRoute = Config.PlatformRoutes[regionStr] ?? string.Empty;
-        region.regionalRoute = Config.RegionalRoutes[regionStr] ?? string.Empty;
+        Console.WriteLine("RegionHandlerMiddleware region: " + region);
+        header.Region = region;
+        header.PlatformRoute = Config.PlatformRoutes[region] ?? string.Empty;
+        header.RegionalRoute = Config.RegionalRoutes[region] ?? string.Empty;
+
+        var userToken = context.Request.Headers["token"].ToString();
+        header.Token = userToken;
 
         await _next(context);
     }

@@ -1,3 +1,5 @@
+using riot_backend.Api.Modules.TeamComps.Models;
+
 namespace riot_backend.Api.Modules.TeamComps;
 
 public class TeamCompService
@@ -7,5 +9,15 @@ public class TeamCompService
     public TeamCompService(TeamCompRepository teamCompRepository)
     {
         _teamCompRepository = teamCompRepository;
+    }
+
+    internal object? Create(TeamRequest teamRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal object? Save(string id, TeamRequest teamRequest)
+    {
+        throw new NotImplementedException();
     }
 }

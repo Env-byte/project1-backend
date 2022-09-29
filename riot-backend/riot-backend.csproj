@@ -37,4 +37,12 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Api\Modules\TeamComps\Types\" />
+      <None Remove="Api\Modules\TeamComps\Models\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Api\Modules\TeamComps\Types\" />
+      <Folder Include="Api\Modules\TeamComps\Models\" />
+    </ItemGroup>
 </Project>

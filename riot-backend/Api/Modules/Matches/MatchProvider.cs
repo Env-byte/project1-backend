@@ -17,13 +17,13 @@ public class MatchProvider
 
     public Types.Match GetMatch(string matchId)
     {
-        var url = _region.regionalRoute + Endpoint + "/" + Uri.EscapeDataString(matchId);
+        var url = _region.RegionalRoute + Endpoint + "/" + Uri.EscapeDataString(matchId);
         return _http.Get<Types.Match>(url);
     }
 
     public List<string> GetMatchPuuids(string puuid)
     {
-        var url = _region.regionalRoute + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid) +
+        var url = _region.RegionalRoute + Endpoint + "/by-puuid/" + Uri.EscapeDataString(puuid) +
                   "/ids?start=0&count=10";
         return _http.Get<List<string>>(url);
     }

@@ -41,7 +41,7 @@ public class SummonerRepository
                 $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE lower(replace(name,' ',''))= lower(@name) AND region=@region",
                 conn);
         cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "name", Value = name});
-        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.Region});
         cmd.Prepare();
 
         using var reader = cmd.ExecuteReader();
@@ -59,7 +59,7 @@ public class SummonerRepository
                 "SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid=@puuid  AND region=@region",
                 conn);
         cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "puuid", Value = puuid});
-        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.Region});
         cmd.Prepare();
         using var reader = cmd.ExecuteReader();
 
@@ -81,7 +81,7 @@ public class SummonerRepository
                 "UPDATE summoners SET name=:name, profile_icon_id=:profile_icon_id, revision_date=:revision_date, summoner_level=:summoner_level,last_update=:last_update WHERE puuid= @puuid AND  AND region=@region",
                 conn);
         cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "puuid", Value = puuid});
-        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.Region});
         cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "name", Value = summoner.name});
         cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "profile_icon_id", Value = summoner.profileIconId});
         cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "revision_date", Value = summoner.revisionDate});
@@ -101,7 +101,7 @@ public class SummonerRepository
                 $"SELECT id, account_id, puuid, name, profile_icon_id, revision_date, summoner_level,last_update FROM summoners WHERE puuid =any(:puuid) AND region= :region",
                 conn);
         cmd.Parameters.AddWithValue("puuid", NpgsqlDbType.Text | NpgsqlDbType.Array, puuids.ToArray());
-        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+        cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.Region});
 
         cmd.Prepare();
         using var reader = cmd.ExecuteReader();
@@ -135,7 +135,7 @@ public class SummonerRepository
             cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "revision_date", Value = summoner.revisionDate});
             cmd.Parameters.Add(new NpgsqlParameter
                 {ParameterName = "summoner_level", Value = summoner.summonerLevel});
-            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.region});
+            cmd.Parameters.Add(new NpgsqlParameter {ParameterName = "region", Value = _region.Region});
 
             cmd.Prepare();
             cmd.ExecuteNonQuery();

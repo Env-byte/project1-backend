@@ -1,8 +1,7 @@
-using System.ComponentModel;
-
 namespace riot_backend.Api.Modules.Summoner;
 
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 
 [Route("api/summoner/")]
 public class SummonerController : Controller
