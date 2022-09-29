@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using riot_backend.Api.Modules.TeamComps.Models;
 
 namespace riot_backend.Api.Modules.TeamComps;
-
+[Route("api/team/")]
 public class TeamCompsController : Controller
 {
     private readonly TeamCompService _service;
@@ -13,12 +13,12 @@ public class TeamCompsController : Controller
         _service = teamCompsService;
     }
 
-    [HttpPut("team/update/{id}")]
-    public IActionResult Save(string id, [FromBody] TeamRequest teamRequest)
+    [HttpPut("update/{guuid}")]
+    public IActionResult Save(string guuid, [FromBody] TeamRequest teamRequest)
     {
-        if (string.IsNullOrEmpty(id))
+        if (string.IsNullOrEmpty(guuid))
         {
-            throw new ArgumentException($"'{nameof(id)}' cannot be null or empty.", nameof(id));
+            throw new ArgumentException($"'{nameof(guuid)}' cannot be null or empty.", nameof(guuid));
         }
 
         if (teamRequest is null)
@@ -26,14 +26,26 @@ public class TeamCompsController : Controller
             throw new ArgumentNullException(nameof(teamRequest));
         }
 
-        teamRequest.Guuid = _service.Save(id, teamRequest);
-
-        return Ok();
+        return Ok(_service.Save(guuid, teamRequest));
     }
 
-    [HttpPost("team/create")]
+    [HttpPost("create")]
     public IActionResult Create([FromBody] TeamRequest teamRequest)
     {
-        return Ok(_service.Create(teamRequest));
+        teamRequest.Guuid = _service.Create(teamRequest);
+
+        return Ok(teamRequest);
+    }
+
+    [HttpGet("{guuid}")]
+    public IActionResult Get(string guuid)
+    {
+        return Ok(_service.Get(guuid));
+    }
+
+    [HttpGet("list/{start}")]
+    public IActionResult Get(int start = 0)
+    {
+        return Ok(_service.GetPublic(start));
     }
 }

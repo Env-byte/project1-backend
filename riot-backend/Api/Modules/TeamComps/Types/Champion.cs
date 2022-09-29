@@ -14,5 +14,5 @@ public class Champion
     [JsonProperty("traits")]
     public List<string> Traits { get; set; }
     [JsonProperty("items")]
-    public List<int> Items { get; set; }
+    public List<short> Items { get; set; }
 }

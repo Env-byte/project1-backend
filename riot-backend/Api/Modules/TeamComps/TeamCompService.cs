@@ -11,12 +11,23 @@ public class TeamCompService
         _repository = teamCompRepository;
     }
 
-    internal string Create(TeamRequest teamRequest)
+    public string Create(TeamRequest teamRequest)
     {
         return _repository.Insert(teamRequest);
     }
 
-    internal object? Save(string id, TeamRequest teamRequest)
+    public TeamRequest Save(string guuid, TeamRequest teamRequest)
+    {
+        throw new NotImplementedException();
+    }
+
+    public TeamRequest Get(string guuid)
+    {
+        var team = _repository.Get(guuid);
+        return TeamRequest.FromTeam(team);
+    }
+
+    internal object? GetPublic(int start)
     {
         throw new NotImplementedException();
     }

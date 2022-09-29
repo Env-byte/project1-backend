@@ -43,6 +43,5 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Api\Modules\TeamComps\Types\" />
-      <Folder Include="Api\Modules\TeamComps\Models\" />
     </ItemGroup>
 </Project>
