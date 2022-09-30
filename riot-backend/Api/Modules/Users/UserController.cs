@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using riot_backend.Api.Modules.Users.Models;
 
 namespace riot_backend.Api.Modules.Users;
 
@@ -14,12 +15,12 @@ public class UsersController : Controller
     [HttpPost("/api/user/google/login")]
     public IActionResult GoogleLogin(string token )
     {
-        return Ok(_userService.GoogleLogin(token));
+        return Ok(UserResponse.FromUser(_userService.GoogleLogin(token)));
     }
 
     [HttpPost("/api/user/access-token/login")]
     public IActionResult AccessTokenLogin(string token)
     {
-        return Ok(_userService.AccessTokenLogin(token));
+        return Ok(UserResponse.FromUser(_userService.AccessTokenLogin(token)));
     }
 }

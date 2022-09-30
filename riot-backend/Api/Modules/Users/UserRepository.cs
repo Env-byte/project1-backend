@@ -1,5 +1,6 @@
 using Dapper;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Npgsql;
 using riot_backend.Api.Modules.Users.Types;
 
@@ -65,6 +66,20 @@ public class UserRepository
 
         //should only ever return one row
 
+        if (reader.Read() == false) return null;
+        var user = User.FromSqlReader(reader);
+        // get first user
+        return user;
+    }
+
+    public User? GetFirstUser()
+    {
+        using var conn = _databaseFactory.GetDatabase();
+        using var cmd =
+            new NpgsqlCommand(
+                "SELECT id,first_name,last_name,email,api_type,api_token,access_token FROM users",
+                conn);
+        using var reader = cmd.ExecuteReader();
         if (reader.Read() == false) return null;
         var user = User.FromSqlReader(reader);
         // get first user

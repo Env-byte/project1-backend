@@ -13,8 +13,8 @@ public class TeamCompsController : Controller
         _service = teamCompsService;
     }
 
-    [HttpPut("update/{guuid}")]
-    public IActionResult Save(string guuid, [FromBody] TeamRequest teamRequest)
+    [HttpPut("/{guuid}/update")]
+    public IActionResult Update(string guuid, [FromBody] TeamRequest teamRequest)
     {
         if (string.IsNullOrEmpty(guuid))
         {
@@ -26,7 +26,23 @@ public class TeamCompsController : Controller
             throw new ArgumentNullException(nameof(teamRequest));
         }
 
-        return Ok(_service.Save(guuid, teamRequest));
+        return Ok(_service.Update(guuid, teamRequest));
+    }
+
+    [HttpPut("/{guuid}/update/options")]
+    public IActionResult UpdateOptions(string guuid, [FromBody] OptionsRequest optionsRequest)
+    {
+        if (string.IsNullOrEmpty(guuid))
+        {
+            throw new ArgumentException($"'{nameof(guuid)}' cannot be null or empty.", nameof(guuid));
+        }
+
+        if (optionsRequest is null)
+        {
+            throw new ArgumentNullException(nameof(optionsRequest));
+        }
+
+        return Ok(_service.UpdateOptions(guuid, optionsRequest));
     }
 
     [HttpPost("create")]
@@ -40,12 +56,18 @@ public class TeamCompsController : Controller
     [HttpGet("{guuid}")]
     public IActionResult Get(string guuid)
     {
-        return Ok(_service.Get(guuid));
+        return Ok(TeamRequest.FromTeam(_service.Get(guuid)));
     }
 
     [HttpGet("list/{start}")]
-    public IActionResult Get(int start = 0)
+    public IActionResult List(int start = 0)
     {
         return Ok(_service.GetPublic(start));
+    }
+
+    [HttpGet("list/user")]
+    public IActionResult ListUser()
+    {
+        return Ok(_service.ListUser());
     }
 }

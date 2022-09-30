@@ -15,7 +15,7 @@ public class UserService
         _googleAuthService = googleAuthService;
     }
 
-    public UserResponse GoogleLogin(string token)
+    public User GoogleLogin(string token)
     {
         var user = _googleAuthService.ValidateToken(token);
         var existingUser = _userRepository.Get(user.apiToken);
@@ -29,7 +29,7 @@ public class UserService
             user = existingUser;
         }
 
-        return UserResponse.FromUser(user);
+        return user;
     }
 
     private string GenerateAccessToken()
@@ -38,10 +38,21 @@ public class UserService
         return guuid.ToString();
     }
 
-    public UserResponse AccessTokenLogin(string token)
+    public User AccessTokenLogin(string token)
     {
         var authUser = _userRepository.GetByAccessToken(token);
         if (authUser == null) throw new KeyNotFoundException("Could not login using access token. User not found");
-        return UserResponse.FromUser(authUser);
+        return authUser;
+    }
+
+    //this is development only
+    public User? GetFirstUser()
+    {
+        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        if (env != "Development")
+        {
+            throw new NotImplementedException();
+        }
+       return _userRepository.GetFirstUser();
     }
 }
