@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using riot_backend.Api;
 using riot_backend.Api.Modules.Champions;
 using riot_backend.Api.Modules.GoogleAuth;
@@ -95,6 +97,25 @@ app.UseAuthorization();
 app.UseHeaderHandler();
 app.MapControllers();
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
-Console.WriteLine("database: "+configuration.GetConnectionString("database"));
+
+//exception handling
+app.UseExceptionHandler(a => a.Run(async context =>
+{
+    var error = context.Features.Get<IExceptionHandlerFeature>().Error;
+    var problem = new ProblemDetails { Title = "Critical Error" };
+    if (error != null)
+    {
+        if (env == "Development")
+        {
+            problem.Title = error.Message;
+            problem.Detail = error.StackTrace;
+        }
+        else
+            problem.Detail = error.Message;
+    }
+    await context.Response.WriteAsJsonAsync(problem);
+}));
+
+Console.WriteLine("database: " + configuration.GetConnectionString("database"));
 app.Run();
 
