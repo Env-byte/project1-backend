@@ -1,10 +1,16 @@
-﻿using Npgsql;
+﻿using Newtonsoft.Json;
+using Npgsql;
 using System;
 namespace riot_backend.Api.Modules.TeamComps.Types;
 public class TeamChampion
 {
+    [JsonProperty("champion_id")]
     public string CharacterId { get; set; }
+
+    [JsonProperty("hex")]
     public int Hex { get; set; }
+
+    [JsonProperty("items")]
     public List<short> ItemIds { get; set; }
     public static TeamChampion FromSqlReader(NpgsqlDataReader reader)
     {

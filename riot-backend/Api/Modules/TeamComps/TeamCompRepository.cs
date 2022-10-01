@@ -24,8 +24,6 @@ public class TeamCompRepository
 
     public string Insert(TeamRequest teamRequest)
     {
-
-
         var guuid = Guid.NewGuid().ToString();
         var query = @"INSERT INTO teams (
                     name,
@@ -48,7 +46,7 @@ public class TeamCompRepository
             using var cmd = new NpgsqlCommand(query, conn);
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = teamRequest.Name });
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "tft_set", Value = teamRequest.SetId });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "created_by", Value = 0 });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "created_by", Value = _header.User.id });
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "guuid", Value = guuid });
             cmd.Prepare();
             teamId = (int?)(cmd.ExecuteScalar()) ?? throw new InvalidOperationException($"'{nameof(teamId)}' cannot be null or empty."); ;

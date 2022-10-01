@@ -17,6 +17,9 @@ public class TeamRequest
     [JsonProperty("isPublic")]
     public bool IsPublic { get; set; }
 
+    [JsonProperty("isReadonly")]
+    public bool IsReadonly { get; set; }
+
     [JsonProperty("guuid")]
     public string Guuid { get; set; }
 
@@ -28,6 +31,7 @@ public class TeamRequest
             Hexes = team.Champions.Select((champion) => Hex.FromChampion(champion)).ToList(),
             SetId = team.TftSetId,
             IsPublic = team.IsPublic,
+            IsReadonly = team.IsReadonly,
             Guuid = team.Guuid
         };
     }

@@ -68,6 +68,6 @@ public class TeamCompsController : Controller
     [HttpGet("list/user")]
     public IActionResult ListUser()
     {
-        return Ok(_service.ListUser());
+        return Ok(_service.ListUser().Select((team) => TeamRequest.FromTeam(team)));
     }
 }

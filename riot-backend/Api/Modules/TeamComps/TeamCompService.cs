@@ -17,6 +17,10 @@ public class TeamCompService
 
     public string Create(TeamRequest teamRequest)
     {
+        if (_header.User == null)
+        {
+            throw new AccessDeniedException("You must be logged in");
+        }
         return _repository.Insert(teamRequest);
     }
 

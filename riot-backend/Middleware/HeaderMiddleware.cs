@@ -1,3 +1,4 @@
+using FluentAssertions.Execution;
 using riot_backend.Api;
 using riot_backend.Api.Modules.GoogleAuth;
 using riot_backend.Api.Modules.Users;
@@ -9,17 +10,17 @@ namespace riot_backend.Middleware;
 public class HeaderMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly UserService _userService;
 
-    public HeaderMiddleware(RequestDelegate next, UserRepository userRepository, GoogleAuthService googleAuthService)
+    public HeaderMiddleware(RequestDelegate next)
     {
         _next = next;
-        _userService = new UserService(userRepository, googleAuthService);
     }
 
-    public async Task Invoke(HttpContext context, Header header)
+    public async Task Invoke(HttpContext context, Header header, UserRepository userRepository, GoogleAuthService googleAuthService)
     {
-        var region = context.Request.Headers["region"].ToString();
+        var userService = new UserService(userRepository, googleAuthService); ;
+
+        var region = context.Request.Headers["Region"].ToString();
 
         if (string.IsNullOrEmpty(region))
         {
@@ -32,19 +33,19 @@ public class HeaderMiddleware
         header.PlatformRoute = Config.PlatformRoutes[region] ?? string.Empty;
         header.RegionalRoute = Config.RegionalRoutes[region] ?? string.Empty;
 
-        header.User = GetUser(context.Request.Headers["token"].ToString());
-
+        header.User = GetUser(context.Request.Headers["Api-Token"].ToString(), userService);
         await _next(context);
     }
 
-    protected User? GetUser(string token)
+    protected User? GetUser(string token, UserService userService)
     {
+
 
         //if testing use first user in db
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         if (env == "Development" && token == string.Empty)
         {
-            var user = _userService.GetFirstUser();
+            var user = userService.GetFirstUser();
             if (user != null)
             {
                 token = user.accessToken ?? "";
@@ -52,7 +53,7 @@ public class HeaderMiddleware
         }
         if (token != string.Empty)
         {
-            return _userService.AccessTokenLogin(token);
+            return userService.AccessTokenLogin(token);
         }
         return null;
     }
