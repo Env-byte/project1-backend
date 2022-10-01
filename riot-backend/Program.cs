@@ -75,9 +75,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-if (env == "Development")
-{
     app.UseStaticFiles(new StaticFileOptions
     {
         OnPrepareResponse = ctx =>
@@ -94,28 +91,14 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 //app.UseHttpsRedirection();
 app.UseAuthorization();
+//sets the header scoped type
 app.UseHeaderHandler();
+
+app.UseExceptionHandler("/error"); 
+app.UseEndpoints(endpoints => endpoints.MapControllers());
 app.MapControllers();
+
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
-
-//exception handling
-app.UseExceptionHandler(a => a.Run(async context =>
-{
-    var error = context.Features.Get<IExceptionHandlerFeature>().Error;
-    var problem = new ProblemDetails { Title = "Critical Error" };
-    if (error != null)
-    {
-        if (env == "Development")
-        {
-            problem.Title = error.Message;
-            problem.Detail = error.StackTrace;
-        }
-        else
-            problem.Detail = error.Message;
-    }
-    await context.Response.WriteAsJsonAsync(problem);
-}));
-
 Console.WriteLine("database: " + configuration.GetConnectionString("database"));
 app.Run();
 

@@ -1,4 +1,3 @@
-using FluentAssertions.Execution;
 using riot_backend.Api;
 using riot_backend.Api.Modules.GoogleAuth;
 using riot_backend.Api.Modules.Users;
@@ -39,18 +38,6 @@ public class HeaderMiddleware
 
     protected User? GetUser(string token, UserService userService)
     {
-
-
-        //if testing use first user in db
-        var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (env == "Development" && token == string.Empty)
-        {
-            var user = userService.GetFirstUser();
-            if (user != null)
-            {
-                token = user.accessToken ?? "";
-            }
-        }
         if (token != string.Empty)
         {
             return userService.AccessTokenLogin(token);
