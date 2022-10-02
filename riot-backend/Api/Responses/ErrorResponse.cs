@@ -1,4 +1,6 @@
-namespace riot_backend.Api;
+using riot_backend.helpers;
+
+namespace riot_backend.Api.Responses;
 
 public class ErrorResponse
 {
@@ -7,15 +9,8 @@ public class ErrorResponse
 
     public ErrorResponse(Exception ex)
     {
-        Type = ex.GetType().Name;
+        Type = ex.GetType().Name.Replace("Exception", "").SplitOnCapitals();
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-        if (env == "Development")
-        {
-            Message = ex.ToString();
-        }
-        else
-        {
-            Message = ex.Message;
-        }
+        Message = env == "Development" ? ex.ToString() : ex.Message;
     }
 }

@@ -78,6 +78,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseHeaderHandler();
+app.UseExceptionHandler("/error"); // Add this
 app.MapControllers();
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
 Console.WriteLine("database: " + configuration.GetConnectionString("database"));
