@@ -1,16 +1,11 @@
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc;
 using riot_backend.Api;
-using riot_backend.Api.Modules.Champions;
 using riot_backend.Api.Modules.GoogleAuth;
-using riot_backend.Api.Modules.Items;
 using riot_backend.Api.Modules.Leagues;
 using riot_backend.Api.Modules.Matches;
 using riot_backend.Api.Modules.Summoner;
 using riot_backend.Api.Modules.TeamComps;
-using riot_backend.Api.Modules.Traits;
 using riot_backend.Api.Modules.Users;
 using riot_backend.Middleware;
 using riot_backend.ScopedTypes;
@@ -46,11 +41,8 @@ builder.Services.AddCors();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SummonerService>();
 builder.Services.AddScoped<MatchService>();
-builder.Services.AddScoped<TraitService>();
 builder.Services.AddScoped<TeamCompService>();
-builder.Services.AddScoped<ItemService>();
 builder.Services.AddScoped<GoogleAuthService>();
-builder.Services.AddScoped<ChampionService>();
 builder.Services.AddScoped<LeagueService>();
 
 builder.Services.AddScoped<Header>();
@@ -64,10 +56,7 @@ builder.Services.AddScoped<LeagueRepository>();
 
 //add providers
 builder.Services.AddScoped<SummonerProvider>();
-builder.Services.AddScoped<TraitProvider>();
 builder.Services.AddScoped<MatchProvider>();
-builder.Services.AddScoped<ItemProvider>();
-builder.Services.AddScoped<ChampionProvider>();
 builder.Services.AddScoped<LeagueProvider>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -75,6 +64,9 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+if (env == "Development")
+{
     app.UseStaticFiles(new StaticFileOptions
     {
         OnPrepareResponse = ctx =>
@@ -91,14 +83,9 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 //app.UseHttpsRedirection();
 app.UseAuthorization();
-//sets the header scoped type
 app.UseHeaderHandler();
-
-app.UseExceptionHandler("/error"); 
-app.UseEndpoints(endpoints => endpoints.MapControllers());
 app.MapControllers();
-
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
-Console.WriteLine("database: " + configuration.GetConnectionString("database"));
+Console.WriteLine("database: "+configuration.GetConnectionString("database"));
 app.Run();
 
