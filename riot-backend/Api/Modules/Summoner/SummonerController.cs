@@ -1,3 +1,5 @@
+using riot_backend.Api.Modules.Matches;
+
 namespace riot_backend.Api.Modules.Summoner;
 
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +11,13 @@ public class SummonerController : Controller
     private readonly ILogger<SummonerController> _logger;
     private readonly SummonerService _service;
 
-    public SummonerController(ILogger<SummonerController> logger, SummonerService summonerService)
+    public SummonerController(ILogger<SummonerController> logger,
+        SummonerRepository summonerRepository,
+        SummonerProvider summonerProvider,
+        MatchRepository matchRepository)
     {
         _logger = logger;
-        _service = summonerService;
+        _service = new SummonerService(summonerRepository, summonerProvider, matchRepository);
     }
 
     [HttpGet("name/{name}")]

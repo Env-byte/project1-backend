@@ -1,16 +1,17 @@
-
 using Microsoft.AspNetCore.Mvc;
 using riot_backend.Api.Modules.TeamComps.Models;
+using riot_backend.ScopedTypes;
 
 namespace riot_backend.Api.Modules.TeamComps;
+
 [Route("api/team/")]
 public class TeamCompsController : Controller
 {
     private readonly TeamCompService _service;
 
-    public TeamCompsController(TeamCompService teamCompsService)
+    public TeamCompsController(TeamCompRepository teamCompRepository, Header header)
     {
-        _service = teamCompsService;
+        _service = new TeamCompService(teamCompRepository, header);
     }
 
     [HttpPut("/{guuid}/update")]
@@ -22,7 +23,7 @@ public class TeamCompsController : Controller
         }
 
         if (teamRequest is not null) return Ok(_service.Update(guuid, teamRequest));
-        
+
         throw new BadRequestException($"'{nameof(teamRequest)}' cannot be null or empty.");
     }
 

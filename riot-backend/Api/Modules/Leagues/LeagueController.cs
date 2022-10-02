@@ -7,11 +7,11 @@ public class LeagueController : Controller
 {
     private readonly LeagueService _leagueService;
 
-    public LeagueController(LeagueService leagueService)
+    public LeagueController(LeagueProvider leagueProvider, LeagueRepository leagueRepository)
     {
-        _leagueService = leagueService;
+        _leagueService = new LeagueService(leagueProvider, leagueRepository);
     }
-    
+
     [HttpGet("summonerId/{summonerId}")]
     public IActionResult GetSummonerId(string summonerId)
     {

@@ -36,16 +36,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors();
-
-//add services
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<SummonerService>();
-builder.Services.AddScoped<MatchService>();
-builder.Services.AddScoped<TeamCompService>();
-builder.Services.AddScoped<GoogleAuthService>();
-builder.Services.AddScoped<LeagueService>();
-
 builder.Services.AddScoped<Header>();
+builder.Services.AddScoped<GoogleAuthService>();
 
 //add repository's
 builder.Services.AddScoped<SummonerRepository>();
@@ -65,6 +57,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 if (env == "Development")
 {
     app.UseStaticFiles(new StaticFileOptions
@@ -77,6 +70,7 @@ if (env == "Development")
         }
     });
 }
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -86,6 +80,5 @@ app.UseAuthorization();
 app.UseHeaderHandler();
 app.MapControllers();
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
-Console.WriteLine("database: "+configuration.GetConnectionString("database"));
+Console.WriteLine("database: " + configuration.GetConnectionString("database"));
 app.Run();
-

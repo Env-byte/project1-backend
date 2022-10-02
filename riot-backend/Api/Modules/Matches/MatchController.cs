@@ -10,10 +10,11 @@ public class MatchesController : Controller
     private readonly ILogger<MatchesController> _logger;
     private readonly MatchService _matchService;
 
-    public MatchesController(ILogger<MatchesController> logger, MatchService matchService)
+    public MatchesController(ILogger<MatchesController> logger, MatchRepository matchRepository,
+        MatchProvider matchProvider)
     {
         _logger = logger;
-        _matchService = matchService;
+        _matchService = new MatchService(matchRepository, matchProvider);
     }
 
     [HttpGet("summonerPuuid/{puuid}")]
