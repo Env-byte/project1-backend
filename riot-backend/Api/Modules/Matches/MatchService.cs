@@ -1,20 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
 using riot_backend.Api.Modules.Matches.Types;
-using riot_backend.Api.Modules.Summoner;
-
 namespace riot_backend.Api.Modules.Matches;
-
 public class MatchService
 {
     private readonly MatchRepository _matchRepository;
     private readonly MatchProvider _matchProvider;
-    private readonly SummonerService _summonerService;
 
-    public MatchService(MatchRepository matchRepository, MatchProvider matchProvider, SummonerService summonerService)
+    public MatchService(MatchRepository matchRepository, MatchProvider matchProvider)
     {
         _matchRepository = matchRepository;
         _matchProvider = matchProvider;
-        _summonerService = summonerService;
     }
 
     public List<Match> GetMatches(List<string> matchPuuid)
@@ -23,7 +17,6 @@ public class MatchService
         var newMatch = matchesNotFound.Select(puuid => _matchProvider.GetMatch(puuid)).ToList();
         _matchRepository.Insert(newMatch);
         matches = matches.Concat(newMatch).ToList();
-
         return matches;
     }
 

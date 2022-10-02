@@ -29,7 +29,7 @@ public class LeagueRepository
         if (string.IsNullOrEmpty(json)) return new List<League>();
 
         return JsonConvert.DeserializeObject<List<League>>(json) ??
-               throw new InvalidOperationException("json is empty");
+               throw new InvalidOperationException("League could not be deserialized");
     }
 
     public void Insert(List<League> leagues)

@@ -25,7 +25,7 @@ public class TeamCompRepository
     public string Insert(TeamRequest teamRequest)
     {
         var guuid = Guid.NewGuid().ToString();
-        var query = @"INSERT INTO teams (
+        const string query = @"INSERT INTO teams (
                     name,
                     tft_set,
                     is_public,
@@ -40,7 +40,7 @@ public class TeamCompRepository
                     NOW(),
                     :guuid
                     ) RETURNING id;";
-        int teamId = 0;
+        int teamId;
         using (var conn = _databaseFactory.GetDatabase())
         {
             using var cmd = new NpgsqlCommand(query, conn);
@@ -58,7 +58,7 @@ public class TeamCompRepository
 
     }
 
-    public Types.Team Get(string guuid)
+    public Team Get(string guuid)
     {
         using var conn = _databaseFactory.GetDatabase();
 
@@ -80,21 +80,21 @@ public class TeamCompRepository
 
         using (var cmd = new NpgsqlCommand())
         {
-            var query = @"SELECT champion_id,hex,item_ids FROM team_champions where team_id=:team_id;";
+            const string query = @"SELECT champion_id,hex,item_ids FROM team_champions where team_id=:team_id;";
             cmd.CommandText = query;
             cmd.Connection = conn;
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "team_id", Value = team.Id });
             cmd.Prepare();
             using var reader = cmd.ExecuteReader();
-            if (reader.HasRows)
+            
+            if (!reader.HasRows) return team;
+            
+            var champions = new List<TeamChampion>();
+            while (reader.Read())
             {
-                var champions = new List<TeamChampion>();
-                while (reader.Read())
-                {
-                    champions.Add(TeamChampion.FromSqlReader(reader));
-                }
-                team.Champions = champions;
+                champions.Add(TeamChampion.FromSqlReader(reader));
             }
+            team.Champions = champions;
         }
 
         return team;
@@ -104,19 +104,17 @@ public class TeamCompRepository
     {
         using var conn = _databaseFactory.GetDatabase();
 
-        using (var cmd = new NpgsqlCommand())
-        {
-            var query = @"UPDATE teams SET name=:name,isPublic=:isPublic where guuid=:guuid;";
-            cmd.CommandText = query;
-            cmd.Connection = conn;
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = optionsRequest.Name });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "isPublic", Value = optionsRequest.IsPublic });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "guuid", Value = guuid });
-            cmd.Prepare();
-            var rowsAffected = cmd.ExecuteNonQuery();
-            //should only affect one row
-            if (rowsAffected == 0) throw new KeyNotFoundException("Could not find team using " + guuid);
-        }
+        using var cmd = new NpgsqlCommand();
+        const string query = @"UPDATE teams SET name=:name,isPublic=:isPublic where guuid=:guuid;";
+        cmd.CommandText = query;
+        cmd.Connection = conn;
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = optionsRequest.Name });
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "isPublic", Value = optionsRequest.IsPublic });
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "guuid", Value = guuid });
+        cmd.Prepare();
+        var rowsAffected = cmd.ExecuteNonQuery();
+        //should only affect one row
+        if (rowsAffected == 0) throw new KeyNotFoundException("Could not find team using " + guuid);
     }
 
     public void Update(int id, TeamRequest teamRequest)
@@ -124,7 +122,7 @@ public class TeamCompRepository
         using (var conn = _databaseFactory.GetDatabase())
         {
             using var cmd = new NpgsqlCommand();
-            var query = @"UPDATE teams SET name=:name,isPublic=:isPublic where id=:id;";
+            const string query = @"UPDATE teams SET name=:name,isPublic=:isPublic where id=:id;";
             cmd.CommandText = query;
             cmd.Connection = conn;
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = teamRequest.Name });
@@ -174,9 +172,8 @@ public class TeamCompRepository
     {
         using var conn = _databaseFactory.GetDatabase();
         var teams = new List<Team>();
-        using (var cmd = new NpgsqlCommand())
-        {
-            var query = @"select id,
+        using var cmd = new NpgsqlCommand();
+        const string query = @"select id,
                            name,
                            tft_set,
                            is_public,
@@ -195,18 +192,18 @@ public class TeamCompRepository
                     WHERE t.created_by=:id
                     group by t.id, tc.champion_id ;";
 
-            cmd.CommandText = query;
-            cmd.Connection = conn;
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
-            cmd.Prepare();
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                var team = Team.FromSqlReader(reader);
-                team.Champions = JsonConvert.DeserializeObject<List<TeamChampion>>(reader.GetString(7)) ?? new List<TeamChampion>();
-                teams.Add(team);
-            }
+        cmd.CommandText = query;
+        cmd.Connection = conn;
+        cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
+        cmd.Prepare();
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var team = Team.FromSqlReader(reader);
+            team.Champions = JsonConvert.DeserializeObject<List<TeamChampion>>(reader.GetString(7)) ?? new List<TeamChampion>();
+            teams.Add(team);
         }
+
         return teams;
     }
 }

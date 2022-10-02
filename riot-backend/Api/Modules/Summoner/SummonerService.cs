@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using riot_backend.Api.Modules.Matches;
 
 namespace riot_backend.Api.Modules.Summoner;
@@ -40,7 +39,7 @@ public class SummonerService
         var summoner = _summonerRepository.GetByPuuid(puuid);
         if (summoner == null)
         {
-            throw new KeyNotFoundException("Could not refresh summoner with puuid: " + puuid + " as it does not exist");
+            throw new NotFoundException("Could not refresh summoner with puuid: " + puuid + " as it does not exist");
         }
 
         //12:30 last update 12:35
@@ -52,7 +51,7 @@ public class SummonerService
         {
             var ts = nextUpdate - DateTime.Now;
 
-            throw new WarningException(
+            throw new BadRequestException(
                 "Please wait " + String.Format("{0:N0}", ts.TotalSeconds) +
                 " second(s) before trying to refresh this summoner again.");
         }
@@ -68,20 +67,16 @@ public class SummonerService
     public Types.Summoner GetByPuuid(string puuid)
     {
         var summoner = _summonerRepository.GetByPuuid(puuid);
-
         if (summoner != null) return summoner;
-
         var providerResponse = _summonerProvider.GetByPuuid(puuid);
         _summonerRepository.Insert(providerResponse);
         summoner = providerResponse;
-
         return summoner;
     }
 
     public List<Types.Summoner> GetByPuuid(List<string> puuids)
     {
         var (notFound, summoners) = _summonerRepository.GetByPuuid(puuids);
-        Console.WriteLine("notFound:" + notFound.ToList());
         var newSummoners = notFound.Select(puuid => _summonerProvider.GetByPuuid(puuid)).ToList();
         _summonerRepository.Insert(newSummoners);
         return summoners.Concat(newSummoners).ToList();

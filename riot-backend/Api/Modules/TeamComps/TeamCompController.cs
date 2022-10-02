@@ -18,15 +18,12 @@ public class TeamCompsController : Controller
     {
         if (string.IsNullOrEmpty(guuid))
         {
-            throw new ArgumentException($"'{nameof(guuid)}' cannot be null or empty.", nameof(guuid));
+            throw new BadRequestException($"'{nameof(guuid)}' cannot be null or empty.");
         }
 
-        if (teamRequest is null)
-        {
-            throw new ArgumentNullException(nameof(teamRequest));
-        }
-
-        return Ok(_service.Update(guuid, teamRequest));
+        if (teamRequest is not null) return Ok(_service.Update(guuid, teamRequest));
+        
+        throw new BadRequestException($"'{nameof(teamRequest)}' cannot be null or empty.");
     }
 
     [HttpPut("/{guuid}/update/options")]
@@ -34,12 +31,12 @@ public class TeamCompsController : Controller
     {
         if (string.IsNullOrEmpty(guuid))
         {
-            throw new ArgumentException($"'{nameof(guuid)}' cannot be null or empty.", nameof(guuid));
+            throw new BadRequestException($"'{nameof(guuid)}' cannot be null or empty.");
         }
 
         if (optionsRequest is null)
         {
-            throw new ArgumentNullException(nameof(optionsRequest));
+            throw new BadRequestException($"'{nameof(optionsRequest)}' cannot be null or empty.");
         }
 
         return Ok(_service.UpdateOptions(guuid, optionsRequest));
