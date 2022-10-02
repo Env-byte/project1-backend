@@ -30,13 +30,6 @@ public class SummonerController : Controller
     [HttpGet("{puuid}/refresh")]
     public IActionResult Refresh(string puuid)
     {
-        try
-        {
-            return Ok(_service.Refresh(puuid));
-        }
-        catch (WarningException e)
-        {
-            return BadRequest(new ErrorWrapper(e.Message, 101));
-        }
+        return Ok(_service.Refresh(puuid));
     }
 }

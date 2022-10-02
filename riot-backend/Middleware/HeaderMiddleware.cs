@@ -36,13 +36,9 @@ public class HeaderMiddleware
         await _next(context);
     }
 
-    protected User? GetUser(string token, UserService userService)
+    private static User? GetUser(string token, UserService userService)
     {
-        if (token != string.Empty)
-        {
-            return userService.AccessTokenLogin(token);
-        }
-        return null;
+        return token != string.Empty ? userService.AccessTokenLogin(token) : null;
     }
 }
 
