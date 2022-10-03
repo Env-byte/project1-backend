@@ -75,11 +75,12 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
+
 //app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseHeaderHandler();
 app.UseExceptionHandler("/error"); // Add this
 app.MapControllers();
-app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods());
+app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().WithMethods(new string[]{"PUT", "POST", "GET", "DELETE", "OPTIONS", "PATCH"}));
 Console.WriteLine("database: " + configuration.GetConnectionString("database"));
 app.Run();

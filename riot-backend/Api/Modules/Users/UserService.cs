@@ -41,7 +41,7 @@ public class UserService
     public User AccessTokenLogin(string token)
     {
         var authUser = _userRepository.GetByAccessToken(token);
-        if (authUser == null) throw new KeyNotFoundException("Could not login using access token. User not found");
+        if (authUser == null) throw new NotFoundException("Could not login using access token. User not found");
         return authUser;
     }
 

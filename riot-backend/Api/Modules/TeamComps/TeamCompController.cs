@@ -14,7 +14,7 @@ public class TeamCompsController : Controller
         _service = new TeamCompService(teamCompRepository, header);
     }
 
-    [HttpPut("/{guuid}/update")]
+    [HttpPut("{guuid}/update")]
     public IActionResult Update(string guuid, [FromBody] TeamRequest teamRequest)
     {
         if (string.IsNullOrEmpty(guuid))
@@ -22,12 +22,10 @@ public class TeamCompsController : Controller
             throw new BadRequestException($"'{nameof(guuid)}' cannot be null or empty.");
         }
 
-        if (teamRequest is not null) return Ok(_service.Update(guuid, teamRequest));
-
-        throw new BadRequestException($"'{nameof(teamRequest)}' cannot be null or empty.");
+        return Ok(_service.Update(guuid, teamRequest));
     }
 
-    [HttpPut("/{guuid}/update/options")]
+    [HttpPatch("{guuid}/update/options")]
     public IActionResult UpdateOptions(string guuid, [FromBody] OptionsRequest optionsRequest)
     {
         if (string.IsNullOrEmpty(guuid))
@@ -57,10 +55,10 @@ public class TeamCompsController : Controller
         return Ok(TeamRequest.FromTeam(_service.Get(guuid)));
     }
 
-    [HttpGet("list/{start}")]
-    public IActionResult List(int start = 0)
+    [HttpGet("list")]
+    public IActionResult List()
     {
-        return Ok(_service.GetPublic(start));
+        return Ok(_service.GetPublic().Select((team) => TeamRequest.FromTeam(team)));
     }
 
     [HttpGet("list/user")]

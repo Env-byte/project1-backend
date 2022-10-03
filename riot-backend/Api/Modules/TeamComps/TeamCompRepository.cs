@@ -30,7 +30,7 @@ public class TeamCompRepository
                     ) VALUES (
                     :name,
                     :tft_set,
-                    false,
+                    :is_public,
                     :created_by,
                     NOW(),
                     :guuid
@@ -41,6 +41,7 @@ public class TeamCompRepository
             using var cmd = new NpgsqlCommand(query, conn);
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = teamRequest.Name });
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "tft_set", Value = teamRequest.SetId });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "is_public", Value = teamRequest.IsPublic });
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "created_by", Value = _header.User.id });
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "guuid", Value = guuid });
             cmd.Prepare();
@@ -69,7 +70,7 @@ public class TeamCompRepository
             cmd.Prepare();
             using var reader = cmd.ExecuteReader();
             //should only ever return one row
-            if (!reader.HasRows) throw new KeyNotFoundException("Could not find team using " + guuid);
+            if (!reader.HasRows) throw new NotFoundException("Could not find team using " + guuid);
             reader.Read();
             team = Team.FromSqlReader(reader);
         }
@@ -111,7 +112,7 @@ public class TeamCompRepository
         cmd.Prepare();
         var rowsAffected = cmd.ExecuteNonQuery();
         //should only affect one row
-        if (rowsAffected == 0) throw new KeyNotFoundException("Could not find team using " + guuid);
+        if (rowsAffected == 0) throw new NotFoundException("Could not find team using " + guuid);
     }
 
     public void Update(int id, TeamRequest teamRequest)
@@ -124,11 +125,11 @@ public class TeamCompRepository
             cmd.Connection = conn;
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "name", Value = teamRequest.Name });
             cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "isPublic", Value = teamRequest.IsPublic });
-            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "guuid", Value = id });
+            cmd.Parameters.Add(new NpgsqlParameter { ParameterName = "id", Value = id });
             cmd.Prepare();
             var rowsAffected = cmd.ExecuteNonQuery();
             //should only affect one row
-            if (rowsAffected == 0) throw new KeyNotFoundException("Could not find team using " + id);
+            if (rowsAffected == 0) throw new NotFoundException("Could not find team using " + id);
         }
 
         InsertChampions(id, teamRequest);
@@ -187,7 +188,8 @@ public class TeamCompRepository
                     from teams as t
                              left join team_champions tc on t.id = tc.team_id
                     WHERE t.created_by=:id
-                    group by t.id, tc.champion_id ;";
+                    group by t.id
+                    order by t.id desc;";
 
         cmd.CommandText = query;
         cmd.Connection = conn;
@@ -204,4 +206,43 @@ public class TeamCompRepository
 
         return teams;
     }
+
+    public List<Team> List()
+    {
+        using var conn = _databaseFactory.GetDatabase();
+        var teams = new List<Team>();
+        using var cmd = new NpgsqlCommand();
+        const string query = @"select id,
+                           name,
+                           tft_set,
+                           is_public,
+                           created_by,
+                           created_on,
+                           guuid,
+                           cast(json_agg(
+                                   jsonb_build_object(
+                                           'champion_id', tc.champion_id,
+                                           'hex', tc.hex,
+                                           'item_ids', tc.item_ids
+                                       )
+                               ) AS text) as champions
+                    from teams as t
+                             left join team_champions tc on t.id = tc.team_id
+                    WHERE t.is_public=true
+                    group by t.id
+                    order by t.id desc;";
+
+        cmd.CommandText = query;
+        cmd.Connection = conn;
+        cmd.Prepare();
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            var team = Team.FromSqlReader(reader);
+            team.Champions = JsonConvert.DeserializeObject<List<TeamChampion>>(reader.GetString(7)) ??
+                             new List<TeamChampion>();
+            teams.Add(team);
+        }
+
+        return teams;    }
 }

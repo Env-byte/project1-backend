@@ -45,12 +45,12 @@ public class TeamCompService
         return team;
     }
 
-    internal object? GetPublic(int start)
+    public List<Team> GetPublic()
     {
-        throw new NotImplementedException();
+        return _repository.List();
     }
 
-    internal bool UpdateOptions(string guuid, OptionsRequest optionsRequest)
+    public bool UpdateOptions(string guuid, OptionsRequest optionsRequest)
     {
         //check we have write access to this team
         var team = Get(guuid);
@@ -74,7 +74,7 @@ public class TeamCompService
         return true;
     }
 
-    internal List<Team> ListUser()
+    public List<Team> ListUser()
     {
         if (_header.User == null)
         {
